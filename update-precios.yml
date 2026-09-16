@@ -1,0 +1,38 @@
+name: Actualizar precios de gasolina
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # cada hora, en punto (hora UTC)
+  workflow_dispatch: {}    # permite lanzarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generar página con los precios actuales
+        run: node scripts/build.mjs
+        env:
+          MUNICIPIO: Aspe
+
+      - name: Guardar y publicar si hay cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html
+          if git diff --cached --quiet; then
+            echo "Sin cambios en los precios, no hago commit."
+          else
+            git commit -m "Actualiza precios $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
