@@ -1,19 +1,22 @@
-# Precios de gasolina en Aspe — actualización automática
+# Precios de gasolina en la Comunitat Valenciana — actualización automática
 
-Genera una página con los precios de todas las gasolineras de un municipio
-(por defecto, Aspe) y la actualiza sola cada hora, publicándola gratis con
+Genera una página con los precios de todas las gasolineras de Alicante,
+Castellón y Valencia, con buscador por código postal, población o nombre de
+gasolinera, y la actualiza sola cada hora, publicándola gratis con
 GitHub Pages.
 
 ## Cómo funciona
 
 1. `scripts/build.mjs` descarga el listado oficial de precios del
-   Ministerio (`sedeaplicaciones.minetur.gob.es`), filtra las gasolineras
-   del municipio indicado y genera `docs/index.html` a partir de
-   `template.html`.
+   Ministerio (`sedeaplicaciones.minetur.gob.es`) para las provincias de
+   Alicante (03), Castellón (12) y Valencia (46), y genera `docs/index.html`
+   a partir de `template.html`.
 2. `.github/workflows/update-precios.yml` ejecuta ese script cada hora
    (`cron: "0 * * * *"`) y, si los precios han cambiado, hace commit y push
    del nuevo `docs/index.html` automáticamente.
 3. GitHub Pages sirve el contenido de `docs/` como una web pública normal.
+4. En la propia página, el buscador filtra en el navegador (sin llamadas de
+   red) por código postal, población o nombre de gasolinera.
 
 ## Puesta en marcha (10 minutos)
 
@@ -33,19 +36,17 @@ consultar el Ministerio y, si algún precio ha cambiado, actualiza la página.
 No hace falta que hagas nada más ni que mantengas nada encendido — corre en
 los servidores de GitHub, gratis dentro del uso normal de un repo personal.
 
-## Cambiar de municipio
+## Añadir o quitar provincias
 
-Edita la línea `MUNICIPIO: Aspe` en
-`.github/workflows/update-precios.yml` (y opcionalmente en el comando de
-`README` si lo ejecutas en local). El nombre debe coincidir con el que usa
-el Ministerio en su base de datos (normalmente el nombre del municipio tal
-cual, sin acentos raros ni provincia).
+Edita el array `PROVINCIAS` en `scripts/build.mjs`. Los códigos de
+provincia del Ministerio son de dos dígitos (por ejemplo `03` Alicante,
+`12` Castellón, `46` Valencia).
 
 ## Probarlo en tu ordenador
 
 ```bash
 npm install   # no hay dependencias externas, solo confirma que usas Node 18+
-MUNICIPIO=Aspe node scripts/build.mjs
+node scripts/build.mjs
 open docs/index.html
 ```
 
@@ -59,3 +60,5 @@ open docs/index.html
 - El diseño (`template.html`) es el mismo que viste en el chat: puedes
   editarlo a mano, los colores de los círculos se generan automáticamente
   a partir del nombre de cada gasolinera.
+- Los colores e iniciales por gasolinera son generados (hash del nombre),
+  no son logos oficiales de las marcas.

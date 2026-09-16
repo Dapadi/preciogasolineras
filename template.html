@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Precios de gasolina en __MUNICIPIO__</title>
+<title>Precios de gasolina en la Comunitat Valenciana</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,7 +27,15 @@
   header { margin-bottom: 18px; }
   h1 { font-weight: 700; font-size: 24px; margin: 0 0 4px; }
   .sub { font-size: 13.5px; color: var(--ink-faint); }
-  .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 18px; }
+  .search-box { margin-top: 18px; position: relative; }
+  .search-box input {
+    width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 14px; outline: none;
+  }
+  .search-box input:focus { border-color: var(--ink-faint); }
+  .search-count { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
+  .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 14px; }
   .col-labels span:nth-child(2), .col-labels span:nth-child(3) { text-align: right; }
   ul.stations { list-style: none; margin: 0; padding: 0; }
   li.station { border-bottom: 1px solid var(--line); }
@@ -51,8 +59,12 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>Gasolina en __MUNICIPIO__</h1>
-    <div class="sub">Actualizado __UPDATED_AT__ · precios en €/l</div>
+    <h1>Gasolina en la Comunitat Valenciana</h1>
+    <div class="sub">Actualizado __UPDATED_AT__ · precios en €/l · Alicante, Castellón y Valencia</div>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Busca por código postal, población o gasolinera..." autocomplete="off">
+    </div>
+    <div class="search-count" id="search-count"></div>
   </header>
 
   <div class="col-labels">
@@ -69,8 +81,17 @@
 
 <script>
   const stations = __STATIONS_JSON__;
+  const MAX_RESULTS = 200;
 
   function fmt(n) { return n === null ? "—" : n.toFixed(3).replace(".", ","); }
+
+  function normalize(str) {
+    return String(str)
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .trim();
+  }
 
   function mapsUrl(s) {
     if (s.lat && s.lng) {
@@ -80,25 +101,53 @@
     return "https://www.google.com/maps/search/?api=1&query=" + q;
   }
 
-  function render() {
+  function matches(s, query) {
+    if (!query) return false;
+    if (s.cp.startsWith(query)) return true;
+    const nq = normalize(query);
+    return (
+      normalize(s.municipio).includes(nq) ||
+      normalize(s.name).includes(nq) ||
+      normalize(s.addr).includes(nq)
+    );
+  }
+
+  function render(query) {
     const list = document.getElementById("station-list");
-    if (!stations.length) {
-      list.innerHTML = '<div class="empty">No hay datos para este municipio en la última consulta.</div>';
+    const count = document.getElementById("search-count");
+
+    if (!query.trim()) {
+      list.innerHTML = '<div class="empty">Escribe un código postal, una población o el nombre de una gasolinera para ver precios.</div>';
+      count.textContent = "";
       return;
     }
-    const dieselVals = stations.map(s => s.diesel).filter(v => v !== null);
-    const g95Vals = stations.map(s => s.g95).filter(v => v !== null);
+
+    const filtered = stations.filter((s) => matches(s, query.trim()));
+
+    if (!filtered.length) {
+      list.innerHTML = '<div class="empty">No se han encontrado gasolineras para esa búsqueda.</div>';
+      count.textContent = "";
+      return;
+    }
+
+    const dieselVals = filtered.map(s => s.diesel).filter(v => v !== null);
+    const g95Vals = filtered.map(s => s.g95).filter(v => v !== null);
     const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
     const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
 
-    const sorted = [...stations].sort((a, b) => {
+    const sorted = [...filtered].sort((a, b) => {
       const av = (a.diesel ?? 99) + (a.g95 ?? 99);
       const bv = (b.diesel ?? 99) + (b.g95 ?? 99);
       return av - bv;
     });
 
+    const shown = sorted.slice(0, MAX_RESULTS);
+    count.textContent = filtered.length > MAX_RESULTS
+      ? `Mostrando ${shown.length} de ${filtered.length} resultados`
+      : `${filtered.length} resultado${filtered.length === 1 ? "" : "s"}`;
+
     list.innerHTML = "";
-    sorted.forEach(s => {
+    shown.forEach(s => {
       const li = document.createElement("li");
       li.className = "station";
       const isDieselBest = s.diesel !== null && s.diesel === minDiesel;
@@ -109,7 +158,7 @@
             <div class="mono" style="background:${s.color}">${s.initials}</div>
             <div class="name-block">
               <div class="name">${s.name}${isDieselBest || isG95Best ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
-              <div class="addr">${s.addr}</div>
+              <div class="addr">${s.addr}${s.municipio ? " · " + s.municipio : ""}</div>
             </div>
           </div>
           <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmt(s.diesel)}</div>
@@ -122,7 +171,9 @@
     });
   }
 
-  render();
+  const input = document.getElementById("search");
+  input.addEventListener("input", () => render(input.value));
+  render("");
 </script>
 </body>
 </html>

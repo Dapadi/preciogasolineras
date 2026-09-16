@@ -22,8 +22,6 @@ jobs:
 
       - name: Generar página con los precios actuales
         run: node scripts/build.mjs
-        env:
-          MUNICIPIO: Aspe
 
       - name: Guardar y publicar si hay cambios
         run: |
