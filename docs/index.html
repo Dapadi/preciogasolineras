@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Precios de gasolina en Aspe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff; --card: #ffffff; --line: #e6e4dd;
+    --ink: #1c1c1a; --ink-dim: #6f6e66; --ink-faint: #9c9b92;
+    --go: #1c8a52; --go-bg: #eaf6ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a; --card: #1e2022; --line: #2c2e30;
+      --ink: #f1f0ec; --ink-dim: #a3a29b; --ink-faint: #75746c;
+      --go: #47c586; --go-bg: #17301f;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Barlow', system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  .wrap { max-width: 600px; margin: 0 auto; padding: 26px 16px 50px; }
+  header { margin-bottom: 18px; }
+  h1 { font-weight: 700; font-size: 24px; margin: 0 0 4px; }
+  .sub { font-size: 13.5px; color: var(--ink-faint); }
+  .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 18px; }
+  .col-labels span:nth-child(2), .col-labels span:nth-child(3) { text-align: right; }
+  ul.stations { list-style: none; margin: 0; padding: 0; }
+  li.station { border-bottom: 1px solid var(--line); }
+  a.row { display: grid; grid-template-columns: 1fr 62px 62px 20px; align-items: center; gap: 10px; padding: 13px 4px; text-decoration: none; color: inherit; }
+  .id-cell { display: flex; align-items: center; gap: 11px; min-width: 0; }
+  .mono { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0; }
+  .name-block { min-width: 0; }
+  .name { font-weight: 600; font-size: 15px; }
+  .best-tag { font-size: 10.5px; font-weight: 600; color: var(--go); background: var(--go-bg); border-radius: 2px; padding: 1px 5px; margin-left: 6px; }
+  .addr { font-size: 12px; color: var(--ink-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .price { text-align: right; font-variant-numeric: tabular-nums; font-size: 14.5px; }
+  .price.best { color: var(--go); font-weight: 700; }
+  .price.na { color: var(--ink-faint); }
+  .pin { color: var(--ink-faint); display: flex; justify-content: center; }
+  .pin svg { width: 16px; height: 16px; }
+  footer { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); line-height: 1.55; }
+  footer .note { margin-bottom: 6px; }
+  .empty { padding: 24px 4px; color: var(--ink-faint); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Gasolina en Aspe</h1>
+    <div class="sub">Actualizado 16/09/2026 9:22:26 · precios en €/l</div>
+  </header>
+
+  <div class="col-labels">
+    <span>Gasolinera</span><span>Diésel</span><span>G. 95</span><span></span>
+  </div>
+
+  <ul class="stations" id="station-list"></ul>
+
+  <footer>
+    <div class="note">Toca una fila para abrir la dirección en Google Maps.</div>
+    <div>Fuente: Ministerio de Industria, Comercio y Turismo (geoportalgasolineras.es). Se actualiza cada hora vía GitHub Actions.</div>
+  </footer>
+</div>
+
+<script>
+  const stations = [{"name":"CEPSA ESPAÑA S.A.","addr":"AVD.DE NAVARRA 151","diesel":1.897,"g95":1.937,"lat":38.354028,"lng":-0.772639,"color":"hsl(83, 42%, 38%)","initials":"CE"},{"name":"LEVANTINA","addr":"POLIGONO C/ IBI, S/N","diesel":1.939,"g95":1.939,"lat":38.356139,"lng":-0.770417,"color":"hsl(122, 42%, 38%)","initials":"LE"},{"name":"CONFORT AUTO","addr":"CARRETERA NOVELDA KM. 22","diesel":1.789,"g95":1.817,"lat":38.358167,"lng":-0.770917,"color":"hsl(74, 42%, 38%)","initials":"CA"},{"name":"RASPA-OIL (SERV. ATENDIDO)","addr":"CR N-325, 5,8","diesel":1.779,"g95":1.799,"lat":38.3555,"lng":-0.772833,"color":"hsl(347, 42%, 38%)","initials":"RS"},{"name":"BP","addr":"POLIGONO TRES HERMANAS   ALCOHOLERA, 11","diesel":1.939,"g95":2.009,"lat":38.325917,"lng":-0.767139,"color":"hsl(326, 42%, 38%)","initials":"BP"},{"name":"GASOLINERA ASPE","addr":"AVENIDA AVENIDA DE ORIHUELA, 101","diesel":1.849,"g95":1.814,"lat":38.336861,"lng":-0.777556,"color":"hsl(6, 42%, 38%)","initials":"GA"},{"name":"REPSOL","addr":"AVENIDA 3 DE AGOSTO, 23","diesel":1.939,"g95":1.999,"lat":38.336722,"lng":-0.774111,"color":"hsl(117, 42%, 38%)","initials":"RE"},{"name":"PLENERGY","addr":"AVENIDA TRES DE AGOSTO, 20","diesel":1.799,"g95":1.819,"lat":38.341583,"lng":-0.773361,"color":"hsl(260, 42%, 38%)","initials":"PL"}];
+
+  function fmt(n) { return n === null ? "—" : n.toFixed(3).replace(".", ","); }
+
+  function mapsUrl(s) {
+    if (s.lat && s.lng) {
+      return "https://www.google.com/maps/search/?api=1&query=" + s.lat + "," + s.lng;
+    }
+    const q = encodeURIComponent(s.name + ", " + s.addr);
+    return "https://www.google.com/maps/search/?api=1&query=" + q;
+  }
+
+  function render() {
+    const list = document.getElementById("station-list");
+    if (!stations.length) {
+      list.innerHTML = '<div class="empty">No hay datos para este municipio en la última consulta.</div>';
+      return;
+    }
+    const dieselVals = stations.map(s => s.diesel).filter(v => v !== null);
+    const g95Vals = stations.map(s => s.g95).filter(v => v !== null);
+    const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
+    const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
+
+    const sorted = [...stations].sort((a, b) => {
+      const av = (a.diesel ?? 99) + (a.g95 ?? 99);
+      const bv = (b.diesel ?? 99) + (b.g95 ?? 99);
+      return av - bv;
+    });
+
+    list.innerHTML = "";
+    sorted.forEach(s => {
+      const li = document.createElement("li");
+      li.className = "station";
+      const isDieselBest = s.diesel !== null && s.diesel === minDiesel;
+      const isG95Best = s.g95 !== null && s.g95 === minG95;
+      li.innerHTML = `
+        <a class="row" href="${mapsUrl(s)}" target="_blank" rel="noopener">
+          <div class="id-cell">
+            <div class="mono" style="background:${s.color}">${s.initials}</div>
+            <div class="name-block">
+              <div class="name">${s.name}${isDieselBest || isG95Best ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
+              <div class="addr">${s.addr}</div>
+            </div>
+          </div>
+          <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmt(s.diesel)}</div>
+          <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmt(s.g95)}</div>
+          <div class="pin">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </a>`;
+      list.appendChild(li);
+    });
+  }
+
+  render();
+</script>
+</body>
+</html>
