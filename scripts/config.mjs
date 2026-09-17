@@ -17,3 +17,13 @@ export const API_URL =
 // la gráfica de evolución de cada población.
 export const HISTORY_TREND_DAYS = 7;
 export const HISTORY_CHART_DAYS = 30;
+
+// Aviso legal / privacidad (Fase 3). LEGAL_NAME y CONTACT_EMAIL aparecen
+// públicamente en docs/aviso-legal/ y docs/privacidad/.
+export const LEGAL_NAME = "David";
+export const CONTACT_EMAIL = "dpdiaz2006@gmail.com";
+
+// Dominio dado de alta en https://plausible.io para la analítica del
+// sitio. Vacío = todavía no hay cuenta creada, así que no se incluye
+// ningún script de analítica en las páginas.
+export const PLAUSIBLE_DOMAIN = "";

@@ -3,6 +3,7 @@
 
 import { escapeHtml } from "./format.mjs";
 import { fill } from "./template.mjs";
+import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
 
 function directorioHtml(provinciasOrdenadas) {
   return provinciasOrdenadas
@@ -23,7 +24,7 @@ function directorioHtml(provinciasOrdenadas) {
     .join("\n");
 }
 
-export function renderHome(template, { stations, updatedAt, provinciasOrdenadas }) {
+export function renderHome(template, { stations, updatedAt, provinciasOrdenadas, plausibleDomain }) {
   // JSON-LD/inline <script> ya cierran con </script>; escapamos "<" para que
   // un nombre o dirección con "</script>" en el texto no rompa la página.
   const stationsJson = JSON.stringify(stations).replace(/</g, "\\u003c");
@@ -31,6 +32,9 @@ export function renderHome(template, { stations, updatedAt, provinciasOrdenadas 
   return fill(template, {
     STATIONS_JSON: stationsJson,
     UPDATED_AT: updatedAt,
-    DIRECTORIO_HTML: directorioHtml(provinciasOrdenadas)
+    DIRECTORIO_HTML: directorioHtml(provinciasOrdenadas),
+    PLAUSIBLE_SCRIPT: renderAnalyticsScript(plausibleDomain),
+    LEGAL_LINKS: renderLegalFooterLinks(""),
+    COOKIE_BANNER: renderCookieBanner("privacidad/")
   });
 }

@@ -3,6 +3,7 @@
 import { SITE_URL, SITE_NAME } from "../config.mjs";
 import { escapeHtml, fmtPrice, mapsUrl } from "./format.mjs";
 import { fill } from "./template.mjs";
+import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
 
 // diff: número (positivo = ha subido, negativo = ha bajado) o null si no
 // hay histórico de hace 7 días para comparar.
@@ -74,7 +75,18 @@ function jsonLdForMunicipio(municipioNombre, provinciaNombre, stations) {
 // suficiente.
 export function renderMunicipioPage(
   template,
-  { provinciaSlug, municipioSlug, provincia, municipio, stationsSorted, municipiosVecinos, updatedAt, trends, chartHtml }
+  {
+    provinciaSlug,
+    municipioSlug,
+    provincia,
+    municipio,
+    stationsSorted,
+    municipiosVecinos,
+    updatedAt,
+    trends,
+    chartHtml,
+    plausibleDomain
+  }
 ) {
   const dieselVals = stationsSorted.map((s) => s.diesel).filter((v) => v !== null);
   const g95Vals = stationsSorted.map((s) => s.g95).filter((v) => v !== null);
@@ -108,7 +120,10 @@ export function renderMunicipioPage(
       chartHtml ||
       `<div class="price-chart price-chart-empty"><h2>Evolución de precios (últimos 30 días)</h2><p>Aún no hay histórico suficiente para esta población: vuelve en unos días para ver la gráfica.</p></div>`,
     NEIGHBORS_HTML: neighborsHtml,
-    HOME_URL: "../../../"
+    HOME_URL: "../../../",
+    PLAUSIBLE_SCRIPT: renderAnalyticsScript(plausibleDomain),
+    LEGAL_LINKS: renderLegalFooterLinks("../../../"),
+    COOKIE_BANNER: renderCookieBanner("../../../privacidad/")
   });
 
   return { html, canonicalUrl };

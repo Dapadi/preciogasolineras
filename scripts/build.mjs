@@ -20,7 +20,7 @@ import { writeFileSync, readFileSync, mkdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import { SITE_URL, PROVINCIAS, HISTORY_TREND_DAYS, HISTORY_CHART_DAYS } from "./config.mjs";
+import { SITE_URL, PROVINCIAS, HISTORY_TREND_DAYS, HISTORY_CHART_DAYS, PLAUSIBLE_DOMAIN } from "./config.mjs";
 import { fetchStations } from "./lib/api.mjs";
 import { groupByProvinciaYMunicipio, sortedEntries, sortByCheapest } from "./lib/group.mjs";
 import { toIsoDate } from "./lib/format.mjs";
@@ -29,6 +29,7 @@ import { renderMunicipioPage } from "./lib/render-municipio.mjs";
 import { buildSitemapXml, buildRobotsTxt } from "./lib/sitemap.mjs";
 import { recordDailySnapshot, priceTrend, averageSeries } from "./lib/history.mjs";
 import { renderPriceChart } from "./lib/sparkline.mjs";
+import { renderAvisoLegal, renderPrivacidad } from "./lib/render-legal.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
@@ -51,8 +52,23 @@ async function main() {
 
   // --- Home: buscador + directorio ---
   const homeTemplate = readFileSync(join(TEMPLATES, "home.html"), "utf8");
-  const homeHtml = renderHome(homeTemplate, { stations, updatedAt, provinciasOrdenadas });
+  const homeHtml = renderHome(homeTemplate, {
+    stations,
+    updatedAt,
+    provinciasOrdenadas,
+    plausibleDomain: PLAUSIBLE_DOMAIN
+  });
   writeFileSync(join(DOCS, "index.html"), homeHtml, "utf8");
+
+  // --- Aviso legal y privacidad (Fase 3) ---
+  const avisoLegalTemplate = readFileSync(join(TEMPLATES, "aviso-legal.html"), "utf8");
+  const privacidadTemplate = readFileSync(join(TEMPLATES, "privacidad.html"), "utf8");
+  const avisoLegal = renderAvisoLegal(avisoLegalTemplate, { updatedAt, plausibleDomain: PLAUSIBLE_DOMAIN });
+  const privacidad = renderPrivacidad(privacidadTemplate, { updatedAt, plausibleDomain: PLAUSIBLE_DOMAIN });
+  mkdirSync(join(DOCS, "aviso-legal"), { recursive: true });
+  mkdirSync(join(DOCS, "privacidad"), { recursive: true });
+  writeFileSync(join(DOCS, "aviso-legal", "index.html"), avisoLegal.html, "utf8");
+  writeFileSync(join(DOCS, "privacidad", "index.html"), privacidad.html, "utf8");
 
   // --- Páginas por población ---
   // Se regeneran desde cero para no dejar páginas huérfanas de municipios
@@ -61,7 +77,11 @@ async function main() {
   rmSync(gasolinerasDir, { recursive: true, force: true });
 
   const municipioTemplate = readFileSync(join(TEMPLATES, "municipio.html"), "utf8");
-  const sitemapUrls = [{ loc: `${SITE_URL}/`, lastmod }];
+  const sitemapUrls = [
+    { loc: `${SITE_URL}/`, lastmod },
+    { loc: avisoLegal.canonicalUrl, lastmod },
+    { loc: privacidad.canonicalUrl, lastmod }
+  ];
 
   for (const [provinciaSlug, prov, municipiosOrdenados] of provinciasOrdenadas) {
     for (const [municipioSlug, muni] of municipiosOrdenados) {
@@ -92,7 +112,8 @@ async function main() {
         municipiosVecinos,
         updatedAt,
         trends,
-        chartHtml
+        chartHtml,
+        plausibleDomain: PLAUSIBLE_DOMAIN
       });
 
       const pageDir = join(gasolinerasDir, provinciaSlug, municipioSlug);

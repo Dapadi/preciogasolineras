@@ -72,12 +72,16 @@ scripts/
     template.mjs             # motor de plantillas (sustitución de __CLAVE__)
     render-home.mjs           # genera el HTML de la home
     render-municipio.mjs       # genera el HTML de cada página de población
-    sitemap.mjs                 # genera sitemap.xml y robots.txt
-    history.mjs                  # snapshot diario y consultas al histórico de precios
-    sparkline.mjs                 # gráfica SVG de evolución de precios
+    render-legal.mjs            # genera aviso legal y privacidad
+    sitemap.mjs                  # genera sitemap.xml y robots.txt
+    history.mjs                   # snapshot diario y consultas al histórico de precios
+    sparkline.mjs                  # gráfica SVG de evolución de precios
+    legal.mjs                       # banner de cookies, script de analítica, enlaces del footer
 templates/
   home.html               # plantilla de la home
   municipio.html           # plantilla de las páginas de población
+  aviso-legal.html         # plantilla del aviso legal
+  privacidad.html          # plantilla de la política de privacidad
 data/
   history/                # histórico diario de precios (no se publica en docs/)
 docs/                      # salida generada, servida por GitHub Pages (no editar a mano)
@@ -102,6 +106,28 @@ que sepa generar ese HTML o datos, invocado desde `build.mjs`.
 - Pendiente (no bloqueante, no implementado todavía): un job semanal que
   comprima el histórico de más de ~90 días a agregados mensuales, para que
   `data/history/` no crezca sin control con el tiempo.
+
+## Legal, cookies y analítica (Fase 3)
+
+- `docs/aviso-legal/` y `docs/privacidad/` se generan a partir de
+  `templates/aviso-legal.html` y `templates/privacidad.html`. El nombre del
+  titular y el email de contacto que aparecen en ambas páginas se
+  configuran en `scripts/config.mjs` (`LEGAL_NAME`, `CONTACT_EMAIL`).
+- Analítica: el sitio usa [Plausible](https://plausible.io) (sin cookies,
+  no requiere consentimiento) en vez de Google Analytics. Para activarla,
+  crea una cuenta/sitio en Plausible con el dominio del sitio y pon ese
+  dominio en `PLAUSIBLE_DOMAIN` (`scripts/config.mjs`); mientras esté
+  vacío, no se incluye ningún script de analítica en las páginas.
+- Banner de cookies (`scripts/lib/legal.mjs`): aparece la primera vez que
+  alguien visita el sitio, explica que la analítica no usa cookies y avisa
+  de que la publicidad (Google AdSense), cuando se active, sí las
+  necesitará. Guarda la aceptación en `localStorage` y expone
+  `window.cookieConsentGiven()` para que el futuro script de AdSense
+  compruebe el consentimiento antes de cargarse.
+- Pendiente (Fase 3, puntos 5-6 del plan, requieren tráfico real primero):
+  solicitar la cuenta de Google AdSense y colocar los anuncios una vez las
+  páginas de población estén indexadas en Google Search Console y haya
+  varias semanas de tráfico orgánico.
 
 ## Probarlo en tu ordenador
 

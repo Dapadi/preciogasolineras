@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviso legal | __SITE_NAME__</title>
+<meta name="description" content="Aviso legal de __SITE_NAME__: titularidad del sitio, contacto y condiciones de uso.">
+<link rel="canonical" href="__CANONICAL_URL__">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+__PLAUSIBLE_SCRIPT__
+<style>
+  :root {
+    --bg: #ffffff; --card: #ffffff; --line: #e6e4dd;
+    --ink: #1c1c1a; --ink-dim: #6f6e66; --ink-faint: #9c9b92;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a; --card: #1e2022; --line: #2c2e30;
+      --ink: #f1f0ec; --ink-dim: #a3a29b; --ink-faint: #75746c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Barlow', system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+  .wrap { max-width: 600px; margin: 0 auto; padding: 26px 16px 50px; }
+  a { color: inherit; }
+  .breadcrumb { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 18px; }
+  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  h1 { font-weight: 700; font-size: 22px; margin: 0 0 18px; }
+  h2 { font-weight: 600; font-size: 15px; margin: 24px 0 8px; }
+  p, li { font-size: 14px; line-height: 1.65; color: var(--ink-dim); }
+  ul { padding-left: 20px; margin: 8px 0; }
+  a.link { color: var(--ink); text-decoration: underline; }
+  footer { margin-top: 30px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); }
+  .cookie-banner { position: fixed; left: 12px; right: 12px; bottom: 12px; max-width: 560px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: 0 6px 24px rgba(0,0,0,.18); font-size: 12.5px; color: var(--ink-dim); z-index: 999; }
+  .cookie-banner p { margin: 0 0 10px; }
+  .cookie-banner a { color: var(--ink); }
+  .cookie-banner button { font-family: inherit; font-size: 13px; font-weight: 600; color: #fff; background: #1c8a52; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="breadcrumb"><a href="__HOME_URL__">Inicio</a> · Aviso legal</div>
+  <h1>Aviso legal</h1>
+
+  <h2>Titular del sitio</h2>
+  <p>
+    __SITE_NAME__ (__SITE_URL__) es un proyecto personal, sin ánimo de
+    constituir una sociedad mercantil, mantenido por __LEGAL_NAME__.
+    Puedes contactar por email en
+    <a class="link" href="mailto:__CONTACT_EMAIL__">__CONTACT_EMAIL__</a>
+    para cualquier consulta relacionada con el sitio.
+  </p>
+
+  <h2>Finalidad del sitio</h2>
+  <p>
+    __SITE_NAME__ recopila y muestra los precios de carburantes de las
+    gasolineras de Alicante, Castellón y Valencia publicados oficialmente
+    por el Ministerio de Industria, Comercio y Turismo, con fines
+    puramente informativos. No vende carburante ni intermedia en ninguna
+    compraventa; los enlaces a Google Maps solo sirven para ubicar cada
+    gasolinera.
+  </p>
+
+  <h2>Exactitud de los datos</h2>
+  <p>
+    Los precios se actualizan automáticamente cada hora a partir de la API
+    pública del Ministerio y pueden no coincidir con el precio real en el
+    surtidor en el momento de tu visita a la gasolinera. Antes de repostar,
+    comprueba el precio en el propio establecimiento.
+  </p>
+
+  <h2>Propiedad intelectual</h2>
+  <p>
+    El diseño y el código de __SITE_NAME__ pueden reutilizarse citando la
+    fuente. Los datos de precios son de titularidad pública (Ministerio de
+    Industria, Comercio y Turismo, geoportalgasolineras.es).
+  </p>
+
+  <h2>Publicidad</h2>
+  <p>
+    __SITE_NAME__ puede mostrar publicidad de terceros (como Google
+    AdSense) para sufragar los costes de mantenimiento del sitio. Cuando
+    esto ocurra se informará en la <a class="link" href="__PRIVACY_URL__">política de privacidad</a>
+    y se pedirá el consentimiento necesario para las cookies asociadas.
+  </p>
+
+  <footer>
+    Última actualización de este aviso: __UPDATED_AT__.
+  </footer>
+</div>
+
+__COOKIE_BANNER__
+</body>
+</html>
