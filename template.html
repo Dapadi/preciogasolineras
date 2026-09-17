@@ -54,6 +54,14 @@
   footer { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); line-height: 1.55; }
   footer .note { margin-bottom: 6px; }
   .empty { padding: 24px 4px; color: var(--ink-faint); font-size: 14px; }
+  .directorio { margin-top: 30px; }
+  .directorio h2 { font-size: 15px; margin: 0 0 12px; }
+  .directorio .provincia { margin-bottom: 18px; }
+  .directorio .provincia h3 { font-size: 13px; color: var(--ink-dim); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .02em; }
+  .directorio .municipios { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; }
+  .directorio .municipios a { color: var(--ink-dim); text-decoration: none; }
+  .directorio .municipios a:hover { text-decoration: underline; }
+  .directorio.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -72,6 +80,11 @@
   </div>
 
   <ul class="stations" id="station-list"></ul>
+
+  <section id="directorio" class="directorio">
+    <h2>Todas las poblaciones</h2>
+__DIRECTORIO_HTML__
+  </section>
 
   <footer>
     <div class="note">Toca una fila para abrir la dirección en Google Maps.</div>
@@ -115,12 +128,16 @@
   function render(query) {
     const list = document.getElementById("station-list");
     const count = document.getElementById("search-count");
+    const directorio = document.getElementById("directorio");
 
     if (!query.trim()) {
-      list.innerHTML = '<div class="empty">Escribe un código postal, una población o el nombre de una gasolinera para ver precios.</div>';
+      list.innerHTML = "";
       count.textContent = "";
+      if (directorio) directorio.classList.remove("hidden");
       return;
     }
+
+    if (directorio) directorio.classList.add("hidden");
 
     const filtered = stations.filter((s) => matches(s, query.trim()));
 
@@ -173,7 +190,10 @@
 
   const input = document.getElementById("search");
   input.addEventListener("input", () => render(input.value));
-  render("");
+
+  const initialQuery = new URLSearchParams(location.search).get("q") || "";
+  if (initialQuery) input.value = initialQuery;
+  render(initialQuery);
 </script>
 </body>
 </html>

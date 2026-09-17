@@ -1,22 +1,31 @@
 # Precios de gasolina en la Comunitat Valenciana — actualización automática
 
-Genera una página con los precios de todas las gasolineras de Alicante,
-Castellón y Valencia, con buscador por código postal, población o nombre de
-gasolinera, y la actualiza sola cada hora, publicándola gratis con
-GitHub Pages.
+Genera una web con los precios de todas las gasolineras de Alicante,
+Castellón y Valencia: una home con buscador y directorio de poblaciones, más
+una página estática por población (para que Google pueda indexarlas), y se
+actualiza sola cada hora, publicándose gratis con GitHub Pages.
 
 ## Cómo funciona
 
 1. `scripts/build.mjs` descarga el listado oficial de precios del
    Ministerio (`sedeaplicaciones.minetur.gob.es`) para las provincias de
-   Alicante (03), Castellón (12) y Valencia (46), y genera `docs/index.html`
-   a partir de `template.html`.
+   Alicante (03), Castellón (12) y Valencia (46), agrupa las gasolineras por
+   provincia y población, y genera:
+   - `docs/index.html`: buscador (por CP, población o nombre) + directorio
+     de poblaciones agrupadas por provincia, a partir de `template.html`.
+   - `docs/gasolineras/{provincia}/{municipio}/index.html`: una página por
+     población con la tabla de precios ya renderizada en el HTML (sin
+     depender de JS), título, meta description, canonical y JSON-LD, a
+     partir de `template-municipio.html`.
+   - `docs/sitemap.xml` y `docs/robots.txt`.
 2. `.github/workflows/update-precios.yml` ejecuta ese script cada hora
-   (`cron: "0 * * * *"`) y, si los precios han cambiado, hace commit y push
-   del nuevo `docs/index.html` automáticamente.
+   (`cron: "0 * * * *"`) y, si algo ha cambiado, hace commit y push de todo
+   `docs/` automáticamente.
 3. GitHub Pages sirve el contenido de `docs/` como una web pública normal.
-4. En la propia página, el buscador filtra en el navegador (sin llamadas de
-   red) por código postal, población o nombre de gasolinera.
+4. En la home, el buscador filtra en el navegador (sin llamadas de red) por
+   código postal, población o nombre de gasolinera. Desde cada página de
+   población se puede volver a la home con una búsqueda ya rellenada
+   (`?q=...`).
 
 ## Puesta en marcha (10 minutos)
 
