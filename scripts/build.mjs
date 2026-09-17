@@ -20,24 +20,32 @@ import { writeFileSync, readFileSync, mkdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import { SITE_URL, PROVINCIAS } from "./config.mjs";
+import { SITE_URL, PROVINCIAS, HISTORY_TREND_DAYS, HISTORY_CHART_DAYS } from "./config.mjs";
 import { fetchStations } from "./lib/api.mjs";
 import { groupByProvinciaYMunicipio, sortedEntries, sortByCheapest } from "./lib/group.mjs";
 import { toIsoDate } from "./lib/format.mjs";
 import { renderHome } from "./lib/render-home.mjs";
 import { renderMunicipioPage } from "./lib/render-municipio.mjs";
 import { buildSitemapXml, buildRobotsTxt } from "./lib/sitemap.mjs";
+import { recordDailySnapshot, priceTrend, averageSeries } from "./lib/history.mjs";
+import { renderPriceChart } from "./lib/sparkline.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DOCS = join(ROOT, "docs");
 const TEMPLATES = join(ROOT, "templates");
+const HISTORY_DIR = join(ROOT, "data", "history");
 
 async function main() {
   const { updatedAt, stations } = await fetchStations(PROVINCIAS);
   const provincias = groupByProvinciaYMunicipio(stations);
   const provinciasOrdenadas = sortedEntries(provincias);
   const lastmod = toIsoDate(updatedAt);
+
+  // --- Histórico diario (Fase 2) ---
+  // Solo se guarda una vez al día: la primera ejecución horaria del día
+  // "gana" esa lectura de referencia, las siguientes no la sobrescriben.
+  recordDailySnapshot(HISTORY_DIR, lastmod, stations);
 
   mkdirSync(DOCS, { recursive: true });
 
@@ -60,6 +68,21 @@ async function main() {
       const stationsSorted = sortByCheapest(muni.stations);
       const municipiosVecinos = municipiosOrdenados.filter(([slug]) => slug !== municipioSlug);
 
+      const trends = new Map();
+      for (const s of stationsSorted) {
+        if (!s.ideess) continue;
+        const dieselTrend = priceTrend(HISTORY_DIR, lastmod, HISTORY_TREND_DAYS, s.ideess, "diesel", s.diesel);
+        const g95Trend = priceTrend(HISTORY_DIR, lastmod, HISTORY_TREND_DAYS, s.ideess, "g95", s.g95);
+        if (dieselTrend) trends.set(`${s.ideess}|diesel`, dieselTrend.diff);
+        if (g95Trend) trends.set(`${s.ideess}|g95`, g95Trend.diff);
+      }
+
+      const ideessList = stationsSorted.map((s) => s.ideess).filter(Boolean);
+      const series = averageSeries(HISTORY_DIR, lastmod, HISTORY_CHART_DAYS, ideessList);
+      const chartHtml = renderPriceChart(series, {
+        title: `Precio medio en ${muni.nombre} (últimos ${HISTORY_CHART_DAYS} días)`
+      });
+
       const { html, canonicalUrl } = renderMunicipioPage(municipioTemplate, {
         provinciaSlug,
         municipioSlug,
@@ -67,7 +90,9 @@ async function main() {
         municipio: muni.nombre,
         stationsSorted,
         municipiosVecinos,
-        updatedAt
+        updatedAt,
+        trends,
+        chartHtml
       });
 
       const pageDir = join(gasolinerasDir, provinciaSlug, municipioSlug);

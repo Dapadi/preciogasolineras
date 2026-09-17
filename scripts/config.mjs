@@ -11,3 +11,9 @@ export const PROVINCIAS = ["03", "12", "46"];
 
 export const API_URL =
   "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/";
+
+// Histórico de precios (Fase 2): cuántos días atrás se compara para la
+// flecha de tendencia por gasolinera, y cuántos días de histórico entran en
+// la gráfica de evolución de cada población.
+export const HISTORY_TREND_DAYS = 7;
+export const HISTORY_CHART_DAYS = 30;

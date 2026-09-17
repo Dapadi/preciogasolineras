@@ -15,12 +15,16 @@
     --bg: #ffffff; --card: #ffffff; --line: #e6e4dd;
     --ink: #1c1c1a; --ink-dim: #6f6e66; --ink-faint: #9c9b92;
     --go: #1c8a52; --go-bg: #eaf6ee;
+    --bad: #b3261e;
+    --line-diesel: #c2410c; --line-g95: #2563eb;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #17181a; --card: #1e2022; --line: #2c2e30;
       --ink: #f1f0ec; --ink-dim: #a3a29b; --ink-faint: #75746c;
       --go: #47c586; --go-bg: #17301f;
+      --bad: #ff8a80;
+      --line-diesel: #f0975a; --line-g95: #6ea8fe;
     }
   }
   * { box-sizing: border-box; }
@@ -62,8 +66,18 @@
   .price { text-align: right; font-variant-numeric: tabular-nums; font-size: 14.5px; }
   .price.best { color: var(--go); font-weight: 700; }
   .price.na { color: var(--ink-faint); }
+  .trend { font-size: 10.5px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 1px; }
+  .trend-up { color: var(--bad); }
+  .trend-down { color: var(--go); }
   .pin { color: var(--ink-faint); display: flex; justify-content: center; }
   .pin svg { width: 16px; height: 16px; }
+  .price-chart { margin-top: 28px; }
+  .price-chart h2 { font-size: 14px; margin: 0 0 10px; }
+  .price-chart svg { display: block; }
+  .price-chart-empty p { font-size: 13px; color: var(--ink-faint); margin: 0; }
+  .chart-legend { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: var(--ink-dim); }
+  .chart-legend span { display: flex; align-items: center; gap: 6px; }
+  .chart-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   .neighbors { margin-top: 28px; }
   .neighbors h2 { font-size: 14px; margin: 0 0 8px; }
   .neighbors .list { font-size: 13px; color: var(--ink-dim); line-height: 1.9; }
@@ -96,6 +110,8 @@
   <ul class="stations">
 __ROWS_HTML__
   </ul>
+
+__CHART_HTML__
 
   <div class="neighbors">
     <h2>Otras poblaciones cercanas en __PROVINCIA_NOMBRE__</h2>

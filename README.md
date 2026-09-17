@@ -18,9 +18,16 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
      depender de JS), título, meta description, canonical y JSON-LD, a
      partir de `templates/municipio.html`.
    - `docs/sitemap.xml` y `docs/robots.txt`.
+   - `data/history/{AAAA-MM-DD}.json`: una entrada `{ ideess, diesel, g95 }`
+     por gasolinera, una vez al día (la primera ejecución del día "gana"
+     esa lectura; las siguientes ejecuciones horarias no la tocan). Con eso
+     cada página de población calcula la flecha de tendencia a 7 días de
+     cada gasolinera (▲/▼) y la gráfica de precio medio de los últimos 30
+     días. `data/history/` no se publica con GitHub Pages (vive fuera de
+     `docs/`), es solo el almacén de datos del histórico.
 2. `.github/workflows/update-precios.yml` ejecuta ese script cada hora
    (`cron: "0 * * * *"`) y, si algo ha cambiado, hace commit y push de todo
-   `docs/` automáticamente.
+   `docs/` y `data/history/` automáticamente.
 3. GitHub Pages sirve el contenido de `docs/` como una web pública normal.
 4. En la home, el buscador filtra en el navegador (sin llamadas de red) por
    código postal, población o nombre de gasolinera. Desde cada página de
@@ -66,15 +73,35 @@ scripts/
     render-home.mjs           # genera el HTML de la home
     render-municipio.mjs       # genera el HTML de cada página de población
     sitemap.mjs                 # genera sitemap.xml y robots.txt
+    history.mjs                  # snapshot diario y consultas al histórico de precios
+    sparkline.mjs                 # gráfica SVG de evolución de precios
 templates/
   home.html               # plantilla de la home
   municipio.html           # plantilla de las páginas de población
+data/
+  history/                # histórico diario de precios (no se publica en docs/)
 docs/                      # salida generada, servida por GitHub Pages (no editar a mano)
 ```
 
-Para añadir contenido nuevo (por ejemplo, el histórico de precios de la
-Fase 2 del plan de SEO) el patrón es: un módulo nuevo en `scripts/lib/`
+Para añadir contenido nuevo el patrón es: un módulo nuevo en `scripts/lib/`
 que sepa generar ese HTML o datos, invocado desde `build.mjs`.
+
+## Histórico de precios (Fase 2)
+
+- `scripts/lib/history.mjs` guarda un snapshot en `data/history/{fecha}.json`
+  una vez al día, y expone `priceTrend` (diferencia de precio de una
+  gasolinera respecto a hace N días) y `averageSeries` (precio medio diario
+  de un conjunto de gasolineras a lo largo de N días). Los días de
+  comparación (`HISTORY_TREND_DAYS` = 7, `HISTORY_CHART_DAYS` = 30) se
+  configuran en `scripts/config.mjs`.
+- `scripts/lib/sparkline.mjs` dibuja esa serie como un `<svg>` generado en
+  el build (sin Chart.js ni canvas), para que la gráfica se vea igual con o
+  sin JavaScript.
+- Cuando una población no tiene todavía 2 días de histórico, su página
+  muestra un aviso de "vuelve en unos días" en vez de la gráfica.
+- Pendiente (no bloqueante, no implementado todavía): un job semanal que
+  comprima el histórico de más de ~90 días a agregados mensuales, para que
+  `data/history/` no crezca sin control con el tiempo.
 
 ## Probarlo en tu ordenador
 

@@ -50,6 +50,10 @@ export async function fetchStations(provincias) {
       const provincia = (e["Provincia"] || "").trim().split("/")[0].trim();
 
       stations.push({
+        // Identificador estable del Ministerio: se usa como clave del
+        // histórico de precios porque, a diferencia del nombre, no cambia
+        // si la gasolinera se renombra.
+        ideess: (e["IDEESS"] || "").trim(),
         name,
         addr: (e["Dirección"] || "").trim(),
         cp: (e["C.P."] || "").trim(),

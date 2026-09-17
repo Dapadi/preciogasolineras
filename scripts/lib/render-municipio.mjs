@@ -4,9 +4,21 @@ import { SITE_URL, SITE_NAME } from "../config.mjs";
 import { escapeHtml, fmtPrice, mapsUrl } from "./format.mjs";
 import { fill } from "./template.mjs";
 
-function stationRowHtml(s, minDiesel, minG95) {
+// diff: número (positivo = ha subido, negativo = ha bajado) o null si no
+// hay histórico de hace 7 días para comparar.
+function trendHtml(diff) {
+  if (diff === null || diff === undefined || Math.abs(diff) < 0.001) return "";
+  const up = diff > 0;
+  const arrow = up ? "▲" : "▼";
+  const sign = up ? "+" : "−";
+  return `<div class="trend ${up ? "trend-up" : "trend-down"}">${arrow} ${sign}${fmtPrice(Math.abs(diff))}</div>`;
+}
+
+function stationRowHtml(s, minDiesel, minG95, trends) {
   const isDieselBest = s.diesel !== null && s.diesel === minDiesel;
   const isG95Best = s.g95 !== null && s.g95 === minG95;
+  const dieselTrend = trends ? trends.get(`${s.ideess}|diesel`) : undefined;
+  const g95Trend = trends ? trends.get(`${s.ideess}|g95`) : undefined;
   return `    <li class="station">
       <a class="row" href="${escapeHtml(mapsUrl(s))}" target="_blank" rel="noopener">
         <div class="id-cell">
@@ -16,8 +28,8 @@ function stationRowHtml(s, minDiesel, minG95) {
             <div class="addr">${escapeHtml(s.addr)}${s.municipio ? " · " + escapeHtml(s.municipio) : ""}</div>
           </div>
         </div>
-        <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmtPrice(s.diesel)}</div>
-        <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmtPrice(s.g95)}</div>
+        <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmtPrice(s.diesel)}${trendHtml(dieselTrend)}</div>
+        <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmtPrice(s.g95)}${trendHtml(g95Trend)}</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -55,17 +67,21 @@ function jsonLdForMunicipio(municipioNombre, provinciaNombre, stations) {
 
 // stationsSorted: gasolineras del municipio ya ordenadas de más barata a
 // más cara. municipiosVecinos: [[slug, {nombre}], ...] del resto de
-// poblaciones de la misma provincia (para el bloque de "cercanas").
+// poblaciones de la misma provincia (para el bloque de "cercanas"). trends:
+// Map "ideess|diesel"/"ideess|g95" -> diferencia de precio vs hace 7 días
+// (o ausente si no hay histórico todavía). chartHtml: bloque de gráfica ya
+// renderizado (lib/sparkline.mjs), o null si aún no hay histórico
+// suficiente.
 export function renderMunicipioPage(
   template,
-  { provinciaSlug, municipioSlug, provincia, municipio, stationsSorted, municipiosVecinos, updatedAt }
+  { provinciaSlug, municipioSlug, provincia, municipio, stationsSorted, municipiosVecinos, updatedAt, trends, chartHtml }
 ) {
   const dieselVals = stationsSorted.map((s) => s.diesel).filter((v) => v !== null);
   const g95Vals = stationsSorted.map((s) => s.g95).filter((v) => v !== null);
   const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
   const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
 
-  const rowsHtml = stationsSorted.map((s) => stationRowHtml(s, minDiesel, minG95)).join("\n");
+  const rowsHtml = stationsSorted.map((s) => stationRowHtml(s, minDiesel, minG95, trends)).join("\n");
 
   const neighborsHtml =
     municipiosVecinos.map(([slug, m]) => `<a href="../${slug}/">${escapeHtml(m.nombre)}</a>`).join('<span class="sep">·</span>') ||
@@ -88,6 +104,9 @@ export function renderMunicipioPage(
     MUNICIPIO_NOMBRE: escapeHtml(municipio),
     PROVINCIA_NOMBRE: escapeHtml(provincia),
     ROWS_HTML: rowsHtml,
+    CHART_HTML:
+      chartHtml ||
+      `<div class="price-chart price-chart-empty"><h2>Evolución de precios (últimos 30 días)</h2><p>Aún no hay histórico suficiente para esta población: vuelve en unos días para ver la gráfica.</p></div>`,
     NEIGHBORS_HTML: neighborsHtml,
     HOME_URL: "../../../"
   });
