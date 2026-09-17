@@ -12,11 +12,11 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
    Alicante (03), Castellón (12) y Valencia (46), agrupa las gasolineras por
    provincia y población, y genera:
    - `docs/index.html`: buscador (por CP, población o nombre) + directorio
-     de poblaciones agrupadas por provincia, a partir de `template.html`.
+     de poblaciones agrupadas por provincia, a partir de `templates/home.html`.
    - `docs/gasolineras/{provincia}/{municipio}/index.html`: una página por
      población con la tabla de precios ya renderizada en el HTML (sin
      depender de JS), título, meta description, canonical y JSON-LD, a
-     partir de `template-municipio.html`.
+     partir de `templates/municipio.html`.
    - `docs/sitemap.xml` y `docs/robots.txt`.
 2. `.github/workflows/update-precios.yml` ejecuta ese script cada hora
    (`cron: "0 * * * *"`) y, si algo ha cambiado, hace commit y push de todo
@@ -47,15 +47,40 @@ los servidores de GitHub, gratis dentro del uso normal de un repo personal.
 
 ## Añadir o quitar provincias
 
-Edita el array `PROVINCIAS` en `scripts/build.mjs`. Los códigos de
+Edita el array `PROVINCIAS` en `scripts/config.mjs`. Los códigos de
 provincia del Ministerio son de dos dígitos (por ejemplo `03` Alicante,
-`12` Castellón, `46` Valencia).
+`12` Castellón, `46` Valencia). El dominio del sitio (`SITE_URL`, usado en
+el sitemap, los canonical y el robots.txt) también vive en ese archivo.
+
+## Estructura del proyecto
+
+```
+scripts/
+  config.mjs             # SITE_URL, SITE_NAME, provincias, URL de la API
+  build.mjs               # orquesta el proceso de generación (punto de entrada)
+  lib/
+    api.mjs                # descarga y normaliza los datos del Ministerio
+    format.mjs             # slugify, escapeHtml, formato de precios/fechas...
+    group.mjs               # agrupa gasolineras por provincia y población
+    template.mjs             # motor de plantillas (sustitución de __CLAVE__)
+    render-home.mjs           # genera el HTML de la home
+    render-municipio.mjs       # genera el HTML de cada página de población
+    sitemap.mjs                 # genera sitemap.xml y robots.txt
+templates/
+  home.html               # plantilla de la home
+  municipio.html           # plantilla de las páginas de población
+docs/                      # salida generada, servida por GitHub Pages (no editar a mano)
+```
+
+Para añadir contenido nuevo (por ejemplo, el histórico de precios de la
+Fase 2 del plan de SEO) el patrón es: un módulo nuevo en `scripts/lib/`
+que sepa generar ese HTML o datos, invocado desde `build.mjs`.
 
 ## Probarlo en tu ordenador
 
 ```bash
 npm install   # no hay dependencias externas, solo confirma que usas Node 18+
-node scripts/build.mjs
+npm run build # equivalente a: node scripts/build.mjs
 open docs/index.html
 ```
 
@@ -66,8 +91,8 @@ open docs/index.html
 - Si un día la API no responde, el workflow simplemente falla ese ciclo y
   lo reintenta en la siguiente hora; la página se queda con los últimos
   datos válidos.
-- El diseño (`template.html`) es el mismo que viste en el chat: puedes
-  editarlo a mano, los colores de los círculos se generan automáticamente
-  a partir del nombre de cada gasolinera.
+- El diseño (`templates/home.html` y `templates/municipio.html`) es HTML y
+  CSS planos: se pueden editar a mano, los colores de los círculos se
+  generan automáticamente a partir del nombre de cada gasolinera.
 - Los colores e iniciales por gasolinera son generados (hash del nombre),
   no son logos oficiales de las marcas.

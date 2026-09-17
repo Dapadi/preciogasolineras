@@ -21,7 +21,7 @@ jobs:
           node-version: 20
 
       - name: Generar página con los precios actuales
-        run: node scripts/build.mjs
+        run: npm run build
 
       - name: Guardar y publicar si hay cambios
         run: |
