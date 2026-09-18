@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">__JSONLD__</script>
+__MAP_HEAD__
 __PLAUSIBLE_SCRIPT__
 <style>
   :root {
@@ -72,6 +73,10 @@ __PLAUSIBLE_SCRIPT__
   .trend-down { color: var(--go); }
   .pin { color: var(--ink-faint); display: flex; justify-content: center; }
   .pin svg { width: 16px; height: 16px; }
+__FILTER_STYLES__
+  .map-section { margin-top: 28px; }
+  .map-section h2 { font-size: 14px; margin: 0 0 10px; }
+  .map-section.hidden { display: none; }
   .price-chart { margin-top: 28px; }
   .price-chart h2 { font-size: 14px; margin: 0 0 10px; }
   .price-chart svg { display: block; }
@@ -107,15 +112,22 @@ __PLAUSIBLE_SCRIPT__
       </form>
     </div>
     <div class="search-hint">Escribe y pulsa "Buscar" para ver los resultados en el buscador general.</div>
+__FILTER_BAR__
+    <div class="search-hint" id="filter-count"></div>
   </header>
 
   <div class="col-labels">
-    <span>Gasolinera</span><span>Diésel</span><span>G. 95</span><span></span>
+    <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
   </div>
 
   <ul class="stations">
 __ROWS_HTML__
   </ul>
+
+  <section class="map-section hidden" id="map-section">
+    <h2>Mapa de gasolineras en __MUNICIPIO_NOMBRE__</h2>
+    <div id="map"></div>
+  </section>
 
 __CHART_HTML__
 
@@ -132,5 +144,128 @@ __CHART_HTML__
 </div>
 
 __COOKIE_BANNER__
+
+__MAP_SCRIPT__
+<script>
+  // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
+  // cargado, la sección se queda oculta y la página funciona igual (la tabla
+  // de precios ya viene renderizada en el HTML).
+  (function () {
+    var items = __MAP_STATIONS_JSON__;
+    if (!items.length || typeof L === "undefined") return;
+    document.getElementById("map-section").classList.remove("hidden");
+    FuelMap.render(items, null);
+  })();
+</script>
+__FUEL_CATALOG_SCRIPT__
+<script>
+  // Filtros de marca y carburante, también como mejora progresiva: operan
+  // sobre las filas que ya vienen en el HTML (cada una lleva su marca y el
+  // precio y la tendencia de cada carburante en atributos data-*), así que
+  // sin JavaScript la página se ve completa y sin barra de filtros.
+  (function () {
+    var rows = [].slice.call(document.querySelectorAll("li.station"));
+    var brandSelect = document.getElementById("filter-brand");
+    var fuelSelect = document.getElementById("filter-fuel");
+    var countEl = document.getElementById("filter-count");
+    var list = document.querySelector("ul.stations");
+    if (!rows.length || !brandSelect || !fuelSelect) return;
+
+    document.getElementById("filters").classList.remove("hidden");
+
+    function priceOf(row, fuelId) {
+      var raw = row.getAttribute("data-p-" + fuelId);
+      return raw === null ? null : parseFloat(raw);
+    }
+
+    function trendOf(row, fuelId) {
+      var raw = row.getAttribute("data-t-" + fuelId);
+      return raw === null ? null : parseFloat(raw);
+    }
+
+    function fmt(n) { return n === null ? "—" : n.toFixed(3).replace(".", ","); }
+
+    function trendHtml(diff) {
+      if (diff === null || Math.abs(diff) < 0.001) return "";
+      var up = diff > 0;
+      return '<div class="trend ' + (up ? "trend-up" : "trend-down") + '">' +
+        (up ? "▲ +" : "▼ −") + fmt(Math.abs(diff)) + "</div>";
+    }
+
+    function apply() {
+      var brand = brandSelect.value;
+      var fuel = fuelSelect.value;
+      var fuels = fuel ? [fuel] : DEFAULT_FUELS;
+
+      brandSelect.classList.toggle("on", Boolean(brand));
+      fuelSelect.classList.toggle("on", Boolean(fuel));
+      document.body.classList.toggle("single-fuel", fuels.length === 1);
+      document.getElementById("lab-p1").textContent = FUEL_LABELS[fuels[0]];
+      if (fuels[1]) document.getElementById("lab-p2").textContent = FUEL_LABELS[fuels[1]];
+
+      var visible = rows.filter(function (row) {
+        if (brand && row.getAttribute("data-brand") !== brand) return false;
+        if (fuel && priceOf(row, fuel) === null) return false;
+        return true;
+      });
+
+      // "MÁS BARATA" se recalcula sobre lo que queda visible.
+      var mins = fuels.map(function (id) {
+        var values = visible.map(function (r) { return priceOf(r, id); })
+          .filter(function (v) { return v !== null; });
+        return values.length ? Math.min.apply(null, values) : null;
+      });
+
+      rows.forEach(function (row) {
+        row.style.display = visible.indexOf(row) === -1 ? "none" : "";
+      });
+
+      visible.forEach(function (row) {
+        var cells = row.querySelectorAll(".price");
+        fuels.forEach(function (id, i) {
+          var cell = cells[i];
+          if (!cell) return;
+          var price = priceOf(row, id);
+          var best = price !== null && price === mins[i];
+          cell.className = "price" + (i === 1 ? " col-p2" : "") + (best ? " best" : "") + (price === null ? " na" : "");
+          cell.innerHTML = fmt(price) + trendHtml(trendOf(row, id));
+        });
+        var tag = row.querySelector(".best-tag");
+        var isBest = fuels.some(function (id, i) {
+          var price = priceOf(row, id);
+          return price !== null && price === mins[i];
+        });
+        if (tag && !isBest) tag.remove();
+        if (!tag && isBest) {
+          var span = document.createElement("span");
+          span.className = "best-tag";
+          span.textContent = "MÁS BARATA";
+          row.querySelector(".name").appendChild(span);
+        }
+      });
+
+      // Reordena por el precio que se está mostrando.
+      visible
+        .slice()
+        .sort(function (a, b) {
+          var score = function (row) {
+            return fuels.reduce(function (acc, id) {
+              var price = priceOf(row, id);
+              return acc + (price === null ? 99 : price);
+            }, 0);
+          };
+          return score(a) - score(b);
+        })
+        .forEach(function (row) { list.appendChild(row); });
+
+      countEl.textContent = (brand || fuel)
+        ? visible.length + (visible.length === 1 ? " gasolinera" : " gasolineras") + " de " + rows.length
+        : "";
+    }
+
+    brandSelect.addEventListener("change", apply);
+    fuelSelect.addEventListener("change", apply);
+  })();
+</script>
 </body>
 </html>

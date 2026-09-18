@@ -20,7 +20,7 @@ import { writeFileSync, readFileSync, mkdirSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-import { SITE_URL, PROVINCIAS, HISTORY_TREND_DAYS, HISTORY_CHART_DAYS, PLAUSIBLE_DOMAIN } from "./config.mjs";
+import { SITE_URL, PROVINCIAS, HISTORY_TREND_DAYS, HISTORY_CHART_DAYS, PLAUSIBLE_DOMAIN, FUELS } from "./config.mjs";
 import { fetchStations } from "./lib/api.mjs";
 import { groupByProvinciaYMunicipio, sortedEntries, sortByCheapest } from "./lib/group.mjs";
 import { toIsoDate } from "./lib/format.mjs";
@@ -91,10 +91,10 @@ async function main() {
       const trends = new Map();
       for (const s of stationsSorted) {
         if (!s.ideess) continue;
-        const dieselTrend = priceTrend(HISTORY_DIR, lastmod, HISTORY_TREND_DAYS, s.ideess, "diesel", s.diesel);
-        const g95Trend = priceTrend(HISTORY_DIR, lastmod, HISTORY_TREND_DAYS, s.ideess, "g95", s.g95);
-        if (dieselTrend) trends.set(`${s.ideess}|diesel`, dieselTrend.diff);
-        if (g95Trend) trends.set(`${s.ideess}|g95`, g95Trend.diff);
+        for (const fuel of FUELS) {
+          const trend = priceTrend(HISTORY_DIR, lastmod, HISTORY_TREND_DAYS, s.ideess, fuel.id, s.prices[fuel.id]);
+          if (trend) trends.set(`${s.ideess}|${fuel.id}`, trend.diff);
+        }
       }
 
       const ideessList = stationsSorted.map((s) => s.ideess).filter(Boolean);
@@ -132,6 +132,20 @@ async function main() {
   console.log(
     `OK: ${stations.length} gasolinera(s) en ${totalMunicipios} población(es) de Alicante, Castellón y Valencia. Última actualización oficial: ${updatedAt}`
   );
+
+  // Cuántas gasolineras vende cada carburante. Un 0 casi siempre significa
+  // que el `apiField` de config.mjs ya no coincide con el nombre del campo
+  // en la respuesta del Ministerio, no que nadie lo venda.
+  for (const fuel of FUELS) {
+    const count = stations.filter((s) => s.prices[fuel.id] !== null).length;
+    if (count === 0) {
+      console.warn(
+        `AVISO: ningún dato de "${fuel.label}". Revisa que el campo "${fuel.apiField}" siga existiendo en la API del Ministerio.`
+      );
+    } else {
+      console.log(`  ${fuel.label}: ${count} gasolinera(s)`);
+    }
+  }
 }
 
 main().catch((err) => {

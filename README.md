@@ -33,6 +33,77 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
    código postal, población o nombre de gasolinera. Desde cada página de
    población se puede volver a la home con una búsqueda ya rellenada
    (`?q=...`).
+5. El botón de geolocalización (📍, junto al buscador) pide permiso al
+   navegador con `navigator.geolocation`, calcula la distancia a cada
+   gasolinera con la fórmula de Haversine (usando `lat`/`lng`, que ya vienen
+   de la API del Ministerio) y muestra las más cercanas en un radio de 15 km
+   ordenadas de más a menos cerca, con la distancia junto a la dirección. Si
+   el usuario ya ha compartido su ubicación, las búsquedas por texto también
+   muestran la distancia de cada resultado (el orden de la búsqueda sigue
+   siendo por precio). Si el navegador no soporta geolocalización o el
+   usuario deniega el permiso, se muestra un aviso y el resto de la página
+   sigue funcionando igual.
+6. Mapa interactivo ([Leaflet](https://leafletjs.com) + tiles de
+   OpenStreetMap, cargados desde CDN). Cada gasolinera es un marcador
+   circular con sus iniciales (mismo color que en la lista); al tocarlo se
+   abre un popup con nombre, dirección y precios, y un enlace "Cómo llegar"
+   a Google Maps. El mapa encuadra automáticamente todos los puntos
+   visibles (`fitBounds`).
+   - En la **home** aparece encima de la lista cada vez que hay resultados
+     que mostrar (una búsqueda con texto o el modo "cerca de mí"), y se
+     oculta por completo cuando no hay ninguna de las dos cosas, para no
+     penalizar la carga inicial. Con geolocalización activa añade además un
+     marcador azul con la posición del usuario.
+   - En cada **página de población** aparece entre la tabla de precios y la
+     gráfica, con las gasolineras de esa población.
+
+   El código del mapa (etiquetas del CDN, estilos y lógica) vive una sola vez
+   en `scripts/lib/map.mjs` y se inyecta en las dos plantillas; expone
+   `FuelMap.render(gasolineras, posicionUsuario)`. Es una mejora progresiva:
+   si no hay coordenadas, no hay JavaScript o el CDN de Leaflet falla, el
+   mapa no se muestra y el resto de la página (que ya viene renderizada en
+   el HTML) funciona igual.
+7. Filtros de **marca** y **carburante**, en la home y en cada página de
+   población. Al elegir un carburante concreto se ocultan las gasolineras que
+   no lo venden, la tabla pasa de dos columnas de precio (diésel + gasolina
+   95) a una sola con la del carburante elegido, y se reordena y se recalcula
+   la etiqueta "MÁS BARATA" por ese precio. En la home los filtros funcionan
+   también sin texto de búsqueda (p. ej. "todas las Ballenoil") y se combinan
+   con el modo "cerca de mí".
+   - La marca no viene en la API: se deduce del "Rótulo" con
+     `brandFromName()` (`scripts/lib/format.mjs`), que busca la enseña como
+     palabra suelta para que "PARADISA" no acabe contando como "Disa". Lo que
+     no casa con ninguna marca conocida se agrupa en "Otras". Cada selector
+     se rellena solo con las marcas que de verdad existen en esa página, con
+     el número de gasolineras de cada una.
+   - La barra y sus estilos viven en `scripts/lib/filters.mjs` y se inyectan
+     en las dos plantillas; el comportamiento no se comparte porque cada
+     página filtra sobre algo distinto: la home vuelve a dibujar la lista
+     desde su JSON, y las páginas de población ocultan y reordenan las filas
+     que ya vienen en el HTML (cada `<li>` lleva su marca y el precio y la
+     tendencia de cada carburante en atributos `data-*`). Por eso en las
+     páginas de población la barra de filtros solo aparece si hay
+     JavaScript: sin él la tabla se ve completa, como antes.
+
+## Carburantes
+
+`FUELS` en `scripts/config.mjs` define los carburantes que se descargan y por
+los que se puede filtrar: gasóleo A, gasóleo premium, gasolina 95, gasolina
+98, GLP y GNC. Cada uno lleva el nombre exacto del campo en la respuesta del
+Ministerio (`apiField`), la etiqueta del selector y la etiqueta corta de la
+cabecera de la tabla. `DEFAULT_FUELS` son los dos que se muestran como
+columnas cuando no hay filtro.
+
+Para añadir o quitar un carburante basta con tocar ese array. Al terminar,
+`build.mjs` imprime cuántas gasolineras venden cada uno; si alguno sale a 0
+avisa por consola, porque casi siempre significa que el `apiField` ya no
+coincide con el nombre del campo en la API y no que nadie lo venda.
+
+Los precios de cada gasolinera viven en `s.prices` (un objeto
+`{ idCarburante: precio | null }`), y el histórico diario guarda todos los
+carburantes. Los snapshots antiguos, que solo llevaban `diesel` y `g95`, se
+siguen leyendo sin problema: los carburantes que no estén en ellos
+simplemente no tienen flecha de tendencia hasta que pasen suficientes días.
 
 ## Puesta en marcha (10 minutos)
 
@@ -63,7 +134,7 @@ el sitemap, los canonical y el robots.txt) también vive en ese archivo.
 
 ```
 scripts/
-  config.mjs             # SITE_URL, SITE_NAME, provincias, URL de la API
+  config.mjs             # SITE_URL, SITE_NAME, provincias, URL de la API, carburantes
   build.mjs               # orquesta el proceso de generación (punto de entrada)
   lib/
     api.mjs                # descarga y normaliza los datos del Ministerio
@@ -77,6 +148,9 @@ scripts/
     history.mjs                   # snapshot diario y consultas al histórico de precios
     sparkline.mjs                  # gráfica SVG de evolución de precios
     legal.mjs                       # banner de cookies, script de analítica, enlaces del footer
+    map.mjs                          # mapa interactivo (Leaflet) compartido por home y poblaciones
+    filters.mjs                       # barra de filtros de marca y carburante (compartida)
+    stations-json.mjs                  # serializa gasolineras para el JS de las páginas
 templates/
   home.html               # plantilla de la home
   municipio.html           # plantilla de las páginas de población

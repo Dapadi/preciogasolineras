@@ -1,7 +1,10 @@
 // Histórico diario de precios por gasolinera (Fase 2 del plan de SEO).
 //
 // Guarda un archivo por día en data/history/{YYYY-MM-DD}.json con una
-// entrada por gasolinera: { ideess, diesel, g95 }. Solo se escribe una vez
+// entrada por gasolinera: { ideess, ...precio de cada carburante }. Los
+// snapshots antiguos solo llevan diesel y g95: se leen igual, y los
+// carburantes que no estén en ellos simplemente no tienen tendencia hasta
+// que pasen suficientes días. Solo se escribe una vez
 // al día (la primera ejecución del workflow que corre ese día "gana"; las
 // siguientes ejecuciones horarias no la sobrescriben), porque con una
 // lectura diaria por gasolinera es suficiente para ver la tendencia y así
@@ -27,16 +30,16 @@ export function recordDailySnapshot(historyDir, dateIso, stations) {
 
   const entries = stations
     .filter((s) => s.ideess)
-    .map((s) => ({ ideess: s.ideess, diesel: s.diesel, g95: s.g95 }));
+    .map((s) => ({ ideess: s.ideess, ...s.prices }));
   writeFileSync(path, JSON.stringify(entries), "utf8");
   return true;
 }
 
 const dayCache = new Map();
 
-// Map ideess -> { diesel, g95 } para un día concreto, o null si ese día no
-// tiene histórico guardado. Cachea en memoria porque el mismo día se
-// consulta una vez por cada población durante el build.
+// Map ideess -> { precios por carburante } para un día concreto, o null si
+// ese día no tiene histórico guardado. Cachea en memoria porque el mismo día
+// se consulta una vez por cada población durante el build.
 export function loadHistoryMap(historyDir, dateIso) {
   if (dayCache.has(dateIso)) return dayCache.get(dateIso);
 
@@ -45,7 +48,7 @@ export function loadHistoryMap(historyDir, dateIso) {
   if (existsSync(path)) {
     try {
       const entries = JSON.parse(readFileSync(path, "utf8"));
-      map = new Map(entries.map((e) => [e.ideess, { diesel: e.diesel, g95: e.g95 }]));
+      map = new Map(entries.map(({ ideess, ...prices }) => [ideess, prices]));
     } catch {
       map = null;
     }

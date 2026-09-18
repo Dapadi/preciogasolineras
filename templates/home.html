@@ -3,110 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Precios de gasolina en la Comunitat Valenciana</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Precio de la gasolina hoy en la Comunitat Valenciana</title>
+<meta name="description" content="Compara el precio de la gasolina y el diésel de todas las gasolineras de Alicante, Castellón y Valencia con los datos oficiales del Ministerio. Gratis y sin registro.">
+__FONTS_TAG__
+__MAP_HEAD__
 __PLAUSIBLE_SCRIPT__
+__THEME_STYLES__
 <style>
-  :root {
-    --bg: #ffffff; --card: #ffffff; --line: #e6e4dd;
-    --ink: #1c1c1a; --ink-dim: #6f6e66; --ink-faint: #9c9b92;
-    --go: #1c8a52; --go-bg: #eaf6ee;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #17181a; --card: #1e2022; --line: #2c2e30;
-      --ink: #f1f0ec; --ink-dim: #a3a29b; --ink-faint: #75746c;
-      --go: #47c586; --go-bg: #17301f;
-    }
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--ink); font-family: 'Barlow', system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
-  .wrap { max-width: 600px; margin: 0 auto; padding: 26px 16px 50px; }
-  header { margin-bottom: 18px; }
-  h1 { font-weight: 700; font-size: 24px; margin: 0 0 4px; }
-  .sub { font-size: 13.5px; color: var(--ink-faint); }
-  .search-box { margin-top: 18px; position: relative; }
+  /* Buscador del héroe */
+  .search-box { position: relative; display: flex; gap: 8px; }
+  .search-field { position: relative; flex: 1; min-width: 0; }
+  .search-field svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #7b889d; }
   .search-box input {
-    width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
-    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-    padding: 12px 14px; outline: none;
+    width: 100%; font-family: inherit; font-size: 15.5px; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 15px 14px 15px 44px; outline: none;
   }
-  .search-box input:focus { border-color: var(--ink-faint); }
-  .search-count { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
-  .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 14px; }
-  .col-labels span:nth-child(2), .col-labels span:nth-child(3) { text-align: right; }
-  ul.stations { list-style: none; margin: 0; padding: 0; }
-  li.station { border-bottom: 1px solid var(--line); }
-  a.row { display: grid; grid-template-columns: 1fr 62px 62px 20px; align-items: center; gap: 10px; padding: 13px 4px; text-decoration: none; color: inherit; }
-  .id-cell { display: flex; align-items: center; gap: 11px; min-width: 0; }
-  .mono { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0; }
-  .name-block { min-width: 0; }
-  .name { font-weight: 600; font-size: 15px; }
-  .best-tag { font-size: 10.5px; font-weight: 600; color: var(--go); background: var(--go-bg); border-radius: 2px; padding: 1px 5px; margin-left: 6px; }
-  .addr { font-size: 12px; color: var(--ink-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .price { text-align: right; font-variant-numeric: tabular-nums; font-size: 14.5px; }
-  .price.best { color: var(--go); font-weight: 700; }
-  .price.na { color: var(--ink-faint); }
-  .pin { color: var(--ink-faint); display: flex; justify-content: center; }
-  .pin svg { width: 16px; height: 16px; }
-  footer { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); line-height: 1.55; }
-  footer .note { margin-bottom: 6px; }
-  .empty { padding: 24px 4px; color: var(--ink-faint); font-size: 14px; }
-  .directorio { margin-top: 30px; }
-  .directorio h2 { font-size: 15px; margin: 0 0 12px; }
-  .directorio .provincia { margin-bottom: 18px; }
-  .directorio .provincia h3 { font-size: 13px; color: var(--ink-dim); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .02em; }
-  .directorio .municipios { display: flex; flex-wrap: wrap; gap: 6px 10px; font-size: 13px; }
-  .directorio .municipios a { color: var(--ink-dim); text-decoration: none; }
-  .directorio .municipios a:hover { text-decoration: underline; }
-  .directorio.hidden { display: none; }
-  .legal-links { margin-top: 6px; }
-  .legal-links a { color: var(--ink-faint); text-decoration: underline; }
-  .cookie-banner { position: fixed; left: 12px; right: 12px; bottom: 12px; max-width: 560px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: 0 6px 24px rgba(0,0,0,.18); font-size: 12.5px; color: var(--ink-dim); z-index: 999; }
-  .cookie-banner p { margin: 0 0 10px; line-height: 1.5; }
-  .cookie-banner a { color: var(--ink); }
-  .cookie-banner button { font-family: inherit; font-size: 13px; font-weight: 600; color: #fff; background: var(--go); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+  .search-box input::placeholder { color: var(--ink-faint); }
+  .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+  .search-hint { font-size: 12.5px; color: #8996aa; margin-top: 9px; }
+  .search-count { font-size: 12.5px; color: var(--accent-soft); margin-top: 9px; font-weight: 600; }
+  .geo-status { font-size: 12.5px; color: #8996aa; margin-top: 8px; }
+  .geo-status.error { color: #fca5a5; }
+  /* Los filtros viven sobre el fondo oscuro del héroe */
+  .hero .filters select { background: var(--navy-soft); border-color: var(--navy-line); color: #dbe3f0; }
+  .hero .filters select.on { border-color: var(--accent); color: var(--accent-soft); }
+  #map { margin-bottom: 8px; height: 300px; }
+  .map-note { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 18px; }
+  .results { margin-bottom: 4px; }
+  .directorio .provincia { margin-bottom: 16px; }
+  .directorio .provincia h3 { font-size: 13px; color: var(--ink-dim); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .04em; font-family: 'Barlow', sans-serif; font-weight: 600; }
+  .directorio .municipios { display: flex; flex-wrap: wrap; gap: 7px; }
+  .directorio .municipios a {
+    font-size: 13px; color: var(--ink-dim); text-decoration: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+  }
+  .directorio .municipios a:hover { color: var(--ink); border-color: var(--ink-faint); }
+  #landing.hidden { display: none; }
+__FILTER_STYLES__
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>Gasolina en la Comunitat Valenciana</h1>
-    <div class="sub">Actualizado __UPDATED_AT__ · precios en €/l · Alicante, Castellón y Valencia</div>
-    <div class="search-box">
-      <input type="text" id="search" placeholder="Busca por código postal, población o gasolinera..." autocomplete="off">
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="./"><span class="logo-mark">__PUMP_ICON__</span>GASOLINA<em>CV</em></a>
+    <div class="topbar-actions">
+      <button type="button" class="btn-ghost js-locate" id="geo-btn">__LOCATE_ICON__ Cerca de mí</button>
     </div>
-    <div class="search-count" id="search-count"></div>
-  </header>
-
-  <div class="col-labels">
-    <span>Gasolinera</span><span>Diésel</span><span>G. 95</span><span></span>
   </div>
-
-  <ul class="stations" id="station-list"></ul>
-
-  <section id="directorio" class="directorio">
-    <h2>Todas las poblaciones</h2>
-__DIRECTORIO_HTML__
-  </section>
-
-  <footer>
-    <div class="note">Toca una fila para abrir la dirección en Google Maps.</div>
-    <div>Fuente: Ministerio de Industria, Comercio y Turismo (geoportalgasolineras.es). Se actualiza cada hora vía GitHub Actions.</div>
-    <div class="legal-links">__LEGAL_LINKS__</div>
-  </footer>
 </div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="status-pill"><i></i> Actualizado __UPDATED_AT__ con datos del Ministerio</div>
+
+    <h1>Precio de la <em>gasolina</em> hoy en la Comunitat Valenciana</h1>
+    <p class="hero-sub">Compara las <b>__TOTAL_STATIONS__ gasolineras</b> de Alicante, Castellón y Valencia con los precios oficiales que cada una comunica al Ministerio. Gratis y sin registro.</p>
+
+    <div class="search-box">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="text" id="search" placeholder="Tu municipio, código postal o gasolinera..." autocomplete="off">
+      </div>
+    </div>
+__FILTER_BAR__
+    <div class="search-hint">__TOTAL_MUNICIPIOS__ poblaciones con gasolinera. Escribe para buscar o filtra por marca y carburante.</div>
+    <div class="search-count" id="search-count"></div>
+    <div class="geo-status" id="geo-status"></div>
+
+    <div class="cta-row">
+      <button type="button" class="btn-primary js-locate">__LOCATE_ICON__ Ver gasolineras cerca de mí</button>
+    </div>
+
+    <div class="stats">
+      <div><b>__TOTAL_STATIONS__</b><span>gasolineras</span></div>
+      <div><b>__TOTAL_MUNICIPIOS__</b><span>poblaciones</span></div>
+      <div><b>__TOTAL_PROVINCIAS__</b><span>provincias</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div id="map" class="hidden"></div>
+    <div class="map-note" id="map-note"></div>
+
+    <div class="results" id="results">
+      <div class="col-labels">
+        <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
+      </div>
+      <ul class="stations" id="station-list"></ul>
+    </div>
+
+    <div id="landing">
+      <section class="section">
+        <h2>Precio medio por provincia</h2>
+        <p class="section-sub">Media de gasolina 95 hoy, con el diésel al lado. En verde la provincia más barata, en rojo la más cara.</p>
+        <div class="panel">
+          <div class="prov-grid">
+__PROVINCIA_ROWS__
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Por marca</h2>
+        <p class="section-sub">Media de gasolina 95 hoy de cada marca. En verde, más de 3 céntimos por debajo de la media; en rojo, por encima.</p>
+        <div class="chips">
+__BRAND_CHIPS__
+        </div>
+      </section>
+
+      <section class="section directorio">
+        <h2>Todas las poblaciones</h2>
+        <p class="section-sub">Una página por población con sus gasolineras, la evolución de precios y el mapa.</p>
+__DIRECTORIO_HTML__
+      </section>
+    </div>
+
+    <footer>
+      <div class="note">Toca una fila para abrir la dirección en Google Maps.</div>
+      <div>Fuente: Ministerio de Industria, Comercio y Turismo (geoportalgasolineras.es). Se actualiza cada hora vía GitHub Actions.</div>
+      <div class="legal-links">__LEGAL_LINKS__</div>
+    </footer>
+  </div>
+</main>
 
 __COOKIE_BANNER__
 
+__MAP_SCRIPT__
+__FUEL_CATALOG_SCRIPT__
 <script>
   const stations = __STATIONS_JSON__;
   const MAX_RESULTS = 200;
+  const NEARBY_KM = 15;
+  let userPos = null;
 
-  function fmt(n) { return n === null ? "—" : n.toFixed(3).replace(".", ","); }
+  function fmt(n) { return n === null || n === undefined ? "—" : n.toFixed(3).replace(".", ","); }
+
+  // Carburante elegido en el filtro, o null ("todos"). Determina qué
+  // columnas de precio se muestran y por cuál se ordena.
+  function activeFuel() {
+    return document.getElementById("filter-fuel").value || null;
+  }
+
+  function activeBrand() {
+    return document.getElementById("filter-brand").value || null;
+  }
+
+  // Carburantes que se muestran como columnas: el elegido, o los dos por
+  // defecto (diésel y gasolina 95).
+  function shownFuels() {
+    const fuel = activeFuel();
+    return fuel ? [fuel] : DEFAULT_FUELS;
+  }
+
+  function applyFilters(list) {
+    const brand = activeBrand();
+    const fuel = activeFuel();
+    return list.filter((s) => {
+      if (brand && s.brand !== brand) return false;
+      // Con un carburante elegido solo salen las que lo venden.
+      if (fuel && s.prices[fuel] === undefined) return false;
+      return true;
+    });
+  }
+
+  function sortByPrice(list) {
+    const keys = shownFuels();
+    const score = (s) => keys.reduce((acc, k) => acc + (s.prices[k] === undefined ? 99 : s.prices[k]), 0);
+    return [...list].sort((a, b) => score(a) - score(b));
+  }
+
+  function fmtDist(km) {
+    return km < 1 ? Math.round(km * 1000) + " m" : km.toFixed(1).replace(".", ",") + " km";
+  }
+
+  // Distancia entre dos puntos (fórmula de Haversine), en km.
+  function distanceKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
 
   function normalize(str) {
     return String(str)
@@ -135,71 +218,213 @@ __COOKIE_BANNER__
     );
   }
 
-  function render(query) {
-    const list = document.getElementById("station-list");
-    const count = document.getElementById("search-count");
-    const directorio = document.getElementById("directorio");
+  function priceCellsHtml(s, fuels, mins) {
+    return fuels
+      .map((id, i) => {
+        const value = s.prices[id];
+        const isBest = value !== undefined && value === mins[i];
+        const cls = "price" + (i === 1 ? " col-p2" : "") + (isBest ? " best" : "") + (value === undefined ? " na" : "");
+        return `<div class="${cls}">${fmt(value)}</div>`;
+      })
+      .join("");
+  }
 
-    if (!query.trim()) {
-      list.innerHTML = "";
-      count.textContent = "";
-      if (directorio) directorio.classList.remove("hidden");
-      return;
-    }
-
-    if (directorio) directorio.classList.add("hidden");
-
-    const filtered = stations.filter((s) => matches(s, query.trim()));
-
-    if (!filtered.length) {
-      list.innerHTML = '<div class="empty">No se han encontrado gasolineras para esa búsqueda.</div>';
-      count.textContent = "";
-      return;
-    }
-
-    const dieselVals = filtered.map(s => s.diesel).filter(v => v !== null);
-    const g95Vals = filtered.map(s => s.g95).filter(v => v !== null);
-    const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
-    const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
-
-    const sorted = [...filtered].sort((a, b) => {
-      const av = (a.diesel ?? 99) + (a.g95 ?? 99);
-      const bv = (b.diesel ?? 99) + (b.g95 ?? 99);
-      return av - bv;
-    });
-
-    const shown = sorted.slice(0, MAX_RESULTS);
-    count.textContent = filtered.length > MAX_RESULTS
-      ? `Mostrando ${shown.length} de ${filtered.length} resultados`
-      : `${filtered.length} resultado${filtered.length === 1 ? "" : "s"}`;
-
-    list.innerHTML = "";
-    shown.forEach(s => {
-      const li = document.createElement("li");
-      li.className = "station";
-      const isDieselBest = s.diesel !== null && s.diesel === minDiesel;
-      const isG95Best = s.g95 !== null && s.g95 === minG95;
-      li.innerHTML = `
+  function stationRowHtml(s, { fuels, mins, isBest, distanceLabel }) {
+    return `
         <a class="row" href="${mapsUrl(s)}" target="_blank" rel="noopener">
           <div class="id-cell">
             <div class="mono" style="background:${s.color}">${s.initials}</div>
             <div class="name-block">
-              <div class="name">${s.name}${isDieselBest || isG95Best ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
-              <div class="addr">${s.addr}${s.municipio ? " · " + s.municipio : ""}</div>
+              <div class="name">${s.name}${isBest ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
+              <div class="addr">${distanceLabel ? '<span class="dist">' + distanceLabel + '</span> · ' : ""}${s.addr}${s.municipio ? " · " + s.municipio : ""}</div>
             </div>
           </div>
-          <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmt(s.diesel)}</div>
-          <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmt(s.g95)}</div>
+          ${priceCellsHtml(s, fuels, mins)}
           <div class="pin">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </div>
         </a>`;
+  }
+
+  // Cabeceras y ancho de la tabla según los carburantes que toca mostrar.
+  function syncColumns(fuels) {
+    document.body.classList.toggle("single-fuel", fuels.length === 1);
+    document.getElementById("lab-p1").textContent = FUEL_LABELS[fuels[0]];
+    if (fuels[1]) document.getElementById("lab-p2").textContent = FUEL_LABELS[fuels[1]];
+  }
+
+  function renderList(items, { withDistance } = {}) {
+    const list = document.getElementById("station-list");
+    const fuels = shownFuels();
+    syncColumns(fuels);
+
+    const mins = fuels.map((id) => {
+      const values = items.map((s) => s.prices[id]).filter((v) => v !== undefined);
+      return values.length ? Math.min(...values) : null;
+    });
+
+    list.innerHTML = "";
+    items.forEach(s => {
+      const li = document.createElement("li");
+      li.className = "station";
+      li.innerHTML = stationRowHtml(s, {
+        fuels,
+        mins,
+        isBest: fuels.some((id, i) => s.prices[id] !== undefined && s.prices[id] === mins[i]),
+        distanceLabel: withDistance && s._distanceKm !== undefined ? fmtDist(s._distanceKm) : null
+      });
       list.appendChild(li);
     });
   }
 
+  // La tabla de resultados solo se ve cuando hay algo que listar; si no,
+  // mandan las secciones de medias y el directorio.
+  function showResults(on) {
+    document.getElementById("results").style.display = on ? "" : "none";
+    document.getElementById("landing").classList.toggle("hidden", on);
+  }
+
+  const LANDING_PINS = 60;
+
+  // En la portada el mapa no se queda vacío: enseña las más baratas de la
+  // Comunitat, que es lo que alguien que entra sin buscar quiere ver.
+  function renderLandingMap() {
+    const cheapest = sortByPrice(stations.filter((s) => s.lat && s.lng)).slice(0, LANDING_PINS);
+    document.getElementById("map-note").textContent =
+      `Las ${cheapest.length} gasolineras más baratas de la Comunitat. Busca o filtra para ver otras.`;
+    FuelMap.render(cheapest, userPos);
+  }
+
+  function render(query) {
+    const list = document.getElementById("station-list");
+    const count = document.getElementById("search-count");
+
+    // Las cabeceras siguen al filtro aunque la lista acabe vacía.
+    syncColumns(shownFuels());
+
+    const hasQuery = Boolean(query.trim());
+    const hasFilters = Boolean(activeBrand() || activeFuel());
+
+    // Sin búsqueda ni filtros volvemos a la portada. Con un filtro puesto
+    // pero sin texto sí listamos (p. ej. "todas las Ballenoil").
+    if (!hasQuery && !hasFilters) {
+      list.innerHTML = "";
+      count.textContent = "";
+      showResults(false);
+      renderLandingMap();
+      return;
+    }
+
+    showResults(true);
+    document.getElementById("map-note").textContent = "";
+
+    const base = hasQuery ? stations.filter((s) => matches(s, query.trim())) : stations;
+    const filtered = applyFilters(base);
+
+    if (!filtered.length) {
+      list.innerHTML = '<div class="empty">No hay gasolineras que cumplan esa búsqueda y esos filtros.</div>';
+      count.textContent = "";
+      FuelMap.render([], userPos);
+      return;
+    }
+
+    const shown = sortByPrice(filtered).slice(0, MAX_RESULTS);
+    count.textContent = filtered.length > MAX_RESULTS
+      ? `Mostrando ${shown.length} de ${filtered.length} resultados`
+      : `${filtered.length} resultado${filtered.length === 1 ? "" : "s"}`;
+
+    if (userPos) {
+      shown.forEach(s => {
+        if (s.lat && s.lng) s._distanceKm = distanceKm(userPos.lat, userPos.lng, s.lat, s.lng);
+      });
+    }
+    renderList(shown, { withDistance: true });
+    FuelMap.render(shown, userPos);
+  }
+
+  function renderNearby(pos) {
+    const list = document.getElementById("station-list");
+    const count = document.getElementById("search-count");
+    const status = document.getElementById("geo-status");
+    const input = document.getElementById("search");
+
+    input.value = "";
+    showResults(true);
+    syncColumns(shownFuels());
+
+    const withCoords = applyFilters(stations.filter(s => s.lat && s.lng));
+    withCoords.forEach(s => { s._distanceKm = distanceKm(pos.lat, pos.lng, s.lat, s.lng); });
+    const nearby = withCoords
+      .filter(s => s._distanceKm <= NEARBY_KM)
+      .sort((a, b) => a._distanceKm - b._distanceKm)
+      .slice(0, 30);
+
+    if (!nearby.length) {
+      list.innerHTML = '<div class="empty">No hay gasolineras que cumplan esos filtros a menos de ' + NEARBY_KM + ' km.</div>';
+      count.textContent = "";
+      status.textContent = "";
+      FuelMap.render([], pos);
+      return;
+    }
+
+    count.textContent = `${nearby.length} gasolinera${nearby.length === 1 ? "" : "s"} a menos de ${NEARBY_KM} km, ordenadas por distancia`;
+    status.textContent = "";
+    renderList(nearby, { withDistance: true });
+    FuelMap.render(nearby, pos);
+  }
+
   const input = document.getElementById("search");
-  input.addEventListener("input", () => render(input.value));
+  const brandSelect = document.getElementById("filter-brand");
+  const fuelSelect = document.getElementById("filter-fuel");
+  const geoBtn = document.getElementById("geo-btn");
+  const geoStatus = document.getElementById("geo-status");
+
+  input.addEventListener("input", () => {
+    geoBtn.classList.remove("on");
+    render(input.value);
+  });
+
+  // Al cambiar un filtro se vuelve a dibujar lo que hubiera: el listado de
+  // cercanas si la geolocalización está activa, o la búsqueda si no.
+  function onFilterChange() {
+    brandSelect.classList.toggle("on", Boolean(brandSelect.value));
+    fuelSelect.classList.toggle("on", Boolean(fuelSelect.value));
+    if (geoBtn.classList.contains("on") && userPos) {
+      renderNearby(userPos);
+    } else {
+      render(input.value);
+    }
+  }
+  brandSelect.addEventListener("change", onFilterChange);
+  fuelSelect.addEventListener("change", onFilterChange);
+
+  // Tanto el botón de la cabecera como el CTA del héroe piden la ubicación.
+  function locateMe() {
+    if (!("geolocation" in navigator)) {
+      geoStatus.textContent = "Tu navegador no permite compartir la ubicación.";
+      geoStatus.classList.add("error");
+      return;
+    }
+    geoStatus.classList.remove("error");
+    geoStatus.textContent = "Buscando tu ubicación...";
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+        geoBtn.classList.add("on");
+        renderNearby(userPos);
+      },
+      (err) => {
+        geoStatus.classList.add("error");
+        geoStatus.textContent = err.code === err.PERMISSION_DENIED
+          ? "Has bloqueado el acceso a tu ubicación. Actívalo en los ajustes del navegador para ver las gasolineras más cercanas."
+          : "No se ha podido obtener tu ubicación. Inténtalo de nuevo.";
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  }
+  [].forEach.call(document.querySelectorAll(".js-locate"), (btn) => {
+    btn.addEventListener("click", locateMe);
+  });
 
   const initialQuery = new URLSearchParams(location.search).get("q") || "";
   if (initialQuery) input.value = initialQuery;

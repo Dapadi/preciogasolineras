@@ -1,6 +1,7 @@
 // Agrupación de gasolineras por provincia y población.
 
-import { slugify, titleCase } from "./format.mjs";
+import { DEFAULT_FUELS } from "../config.mjs";
+import { OTHER_BRAND, slugify, titleCase } from "./format.mjs";
 
 // Añade provinciaSlug/municipioSlug a cada estación (mutando la lista que
 // devuelve lib/api.mjs) y devuelve un Map:
@@ -41,10 +42,29 @@ export function sortedEntries(provincias) {
   });
 }
 
-export function sortByCheapest(stations) {
-  return [...stations].sort((a, b) => {
-    const av = (a.diesel ?? 99) + (a.g95 ?? 99);
-    const bv = (b.diesel ?? 99) + (b.g95 ?? 99);
-    return av - bv;
-  });
+// Ordena de más barata a más cara. Sin `fuelId` compara la suma de los
+// carburantes por defecto (diésel + gasolina 95, que es lo que muestran las
+// dos columnas); con `fuelId`, solo el precio de ese carburante. Las que no
+// venden un carburante puntúan 99 y caen al final.
+export function sortByCheapest(stations, fuelId = null) {
+  const keys = fuelId ? [fuelId] : DEFAULT_FUELS;
+  const score = (s) => keys.reduce((acc, k) => acc + (s.prices[k] ?? 99), 0);
+  return [...stations].sort((a, b) => score(a) - score(b));
+}
+
+// Marcas presentes en un conjunto de gasolineras, de más a menos frecuente,
+// con "Otras" siempre al final. Sirve para poblar el selector de marca solo
+// con las que de verdad existen en esa página.
+export function brandsPresent(stations) {
+  const counts = new Map();
+  for (const s of stations) {
+    counts.set(s.brand, (counts.get(s.brand) || 0) + 1);
+  }
+  return [...counts.entries()]
+    .sort((a, b) => {
+      if (a[0] === OTHER_BRAND) return 1;
+      if (b[0] === OTHER_BRAND) return -1;
+      return b[1] - a[1] || a[0].localeCompare(b[0], "es");
+    })
+    .map(([brand, count]) => ({ brand, count }));
 }
