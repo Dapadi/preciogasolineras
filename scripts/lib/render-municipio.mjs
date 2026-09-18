@@ -7,6 +7,7 @@ import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } fro
 import { renderMapHead, renderMapScript, mapStationsJson } from "./map.mjs";
 import { renderFilterBar, renderFilterStyles, renderFuelCatalogScript } from "./filters.mjs";
 import { brandsPresent } from "./group.mjs";
+import { FONTS_TAG, PUMP_ICON, renderThemeStyles } from "./theme.mjs";
 
 // diff: número (positivo = ha subido, negativo = ha bajado) o null si no
 // hay histórico de hace 7 días para comparar.
@@ -120,7 +121,7 @@ export function renderMunicipioPage(
   const rowsHtml = stationsSorted.map((s) => stationRowHtml(s, mins, trends)).join("\n");
 
   const neighborsHtml =
-    municipiosVecinos.map(([slug, m]) => `<a href="../${slug}/">${escapeHtml(m.nombre)}</a>`).join('<span class="sep">·</span>') ||
+    municipiosVecinos.map(([slug, m]) => `<a href="../${slug}/">${escapeHtml(m.nombre)}</a>`).join("\n      ") ||
     "—";
 
   const canonicalUrl = `${SITE_URL}/gasolineras/${provinciaSlug}/${municipioSlug}/`;
@@ -151,6 +152,12 @@ export function renderMunicipioPage(
     FILTER_STYLES: renderFilterStyles(),
     FILTER_BAR: renderFilterBar(brandsPresent(stationsSorted), { hidden: true }),
     FUEL_CATALOG_SCRIPT: renderFuelCatalogScript(),
+    FONTS_TAG,
+    THEME_STYLES: renderThemeStyles(),
+    PUMP_ICON,
+    TOTAL_STATIONS: stationsSorted.length,
+    MIN_DIESEL: fmtPrice(minDiesel),
+    MIN_G95: fmtPrice(minG95),
     PLAUSIBLE_SCRIPT: renderAnalyticsScript(plausibleDomain),
     LEGAL_LINKS: renderLegalFooterLinks("../../../"),
     COOKIE_BANNER: renderCookieBanner("../../../privacidad/")
