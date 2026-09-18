@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · Masalavés</div>
-    <div class="status-pill"><i></i> Actualizado 18/09/2026 16:47:50 con datos del Ministerio</div>
+    <div class="status-pill"><i></i> Actualizado 18/09/2026 19:55:02 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Masalavés hoy</h1>
     <p class="hero-sub">Las <b>3 gasolineras</b> de Masalavés (Valencia) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -327,7 +327,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Repsol" data-p-diesel="1.995" data-p-dieselpremium="2.055" data-p-g95="2.035" data-p-g98="2.195" data-p-glp="1.139">
+    <li class="station" data-brand="Repsol" data-p-diesel="1.995" data-p-dieselpremium="2.055" data-p-g95="2.025" data-p-g98="2.195" data-p-glp="1.139">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.153972,-0.527806" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -337,13 +337,13 @@
           </div>
         </div>
         <div class="price">1,995</div>
-        <div class="price col-p2">2,035</div>
+        <div class="price col-p2">2,025</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Repsol" data-p-diesel="1.995" data-p-dieselpremium="2.055" data-p-g95="2.035" data-p-g98="2.195" data-p-glp="1.139">
+    <li class="station" data-brand="Repsol" data-p-diesel="1.995" data-p-dieselpremium="2.055" data-p-g95="2.025" data-p-g98="2.195" data-p-glp="1.139">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.154583,-0.529361" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -353,7 +353,7 @@
           </div>
         </div>
         <div class="price">1,995</div>
-        <div class="price col-p2">2,035</div>
+        <div class="price col-p2">2,025</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -691,7 +691,7 @@
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
   // de precios ya viene renderizada en el HTML).
   (function () {
-    var items = [{"name":"RIBERCOST","addr":"N-340 km 867.50000","cp":"46292","municipio":"Masalavés","brand":"Otras","lat":39.162806,"lng":-0.518806,"color":"hsl(285, 42%, 38%)","initials":"RI","prices":{"diesel":1.855,"g95":1.75}},{"name":"REPSOL","addr":"AUTOPISTA A-7 KM. 659,8","cp":"46292","municipio":"Masalavés","brand":"Repsol","lat":39.153972,"lng":-0.527806,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.995,"dieselpremium":2.055,"g95":2.035,"g98":2.195,"glp":1.139}},{"name":"REPSOL","addr":"AUTOPISTA A-7 KM. 659,8","cp":"46292","municipio":"Masalavés","brand":"Repsol","lat":39.154583,"lng":-0.529361,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.995,"dieselpremium":2.055,"g95":2.035,"g98":2.195,"glp":1.139}}];
+    var items = [{"name":"RIBERCOST","addr":"N-340 km 867.50000","cp":"46292","municipio":"Masalavés","brand":"Otras","lat":39.162806,"lng":-0.518806,"color":"hsl(285, 42%, 38%)","initials":"RI","prices":{"diesel":1.855,"g95":1.75}},{"name":"REPSOL","addr":"AUTOPISTA A-7 KM. 659,8","cp":"46292","municipio":"Masalavés","brand":"Repsol","lat":39.153972,"lng":-0.527806,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.995,"dieselpremium":2.055,"g95":2.025,"g98":2.195,"glp":1.139}},{"name":"REPSOL","addr":"AUTOPISTA A-7 KM. 659,8","cp":"46292","municipio":"Masalavés","brand":"Repsol","lat":39.154583,"lng":-0.529361,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.995,"dieselpremium":2.055,"g95":2.025,"g98":2.195,"glp":1.139}}];
     if (!items.length || typeof L === "undefined") return;
     document.getElementById("map-section").classList.remove("hidden");
     FuelMap.render(items, null);
