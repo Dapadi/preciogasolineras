@@ -6,10 +6,10 @@
 <title>Gasolinera más barata en Alcalà de Xivert hoy — diésel y gasolina 95 | Gasolina CV</title>
 <meta name="description" content="Gasolinera más barata hoy en Alcalà de Xivert: diésel desde 1,969 €/l, gasolina 95 desde 1,937 €/l. 3 gasolineras comparadas, precios oficiales del Ministerio.">
 <link rel="canonical" href="https://dapadi.github.io/preciogasolineras/gasolineras/castellon/alcala-de-xivert/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Gasolineras en Alcalà de Xivert","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"GasStation","name":"CASTELL XIVERT","address":{"@type":"PostalAddress","streetAddress":"CARRETERA CV-142 KM. 1,5","addressLocality":"Alcalà de Xivert","postalCode":"12570","addressRegion":"Castellón","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":40.256333,"longitude":0.2445}}},{"@type":"ListItem","position":2,"item":{"@type":"GasStation","name":"COOP. SAN ISIDRO DE ALCALA","address":{"@type":"PostalAddress","streetAddress":"C/ BARON DE ALCAHALI, S/N","addressLocality":"Alcalà de Xivert","postalCode":"12570","addressRegion":"Castellón","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":40.309361,"longitude":0.229361}}},{"@type":"ListItem","position":3,"item":{"@type":"GasStation","name":"REPSOL","address":{"@type":"PostalAddress","streetAddress":"CARRETERA NACIONAL 340 KM. 1021","addressLocality":"Alcalà de Xivert","postalCode":"12570","addressRegion":"Castellón","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":40.296944,"longitude":0.226333}}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Gasolineras en Alcalà de Xivert","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"GasStation","name":"CASTELL XIVERT","address":{"@type":"PostalAddress","streetAddress":"CARRETERA CV-142 KM. 1,5","addressLocality":"Alcalà de Xivert","postalCode":"12570","addressRegion":"Castellón","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":40.256333,"longitude":0.2445}}},{"@type":"ListItem","position":2,"item":{"@type":"GasStation","name":"COOP. SAN ISIDRO DE ALCALA","address":{"@type":"PostalAddress","streetAddress":"C/ BARON DE ALCAHALI, S/N","addressLocality":"Alcalà de Xivert","postalCode":"12570","addressRegion":"Castellón","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":40.309361,"longitude":0.229361}}},{"@type":"ListItem","position":3,"item":{"@type":"GasStation","name":"REPSOL","address":{"@type":"PostalAddress","streetAddress":"CARRETERA NACIONAL 340 KM. 1021","addressLocality":"Alcalà de Xivert","postalCode":"12570","addressRegion":"Castellón","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":40.296944,"longitude":0.226333}}}]}</script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
   #map { height: 230px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); }
@@ -36,65 +36,201 @@
 
 <style>
   :root {
-    --bg: #ffffff; --card: #ffffff; --line: #e6e4dd;
-    --ink: #1c1c1a; --ink-dim: #6f6e66; --ink-faint: #9c9b92;
-    --go: #1c8a52; --go-bg: #eaf6ee;
-    --bad: #b3261e;
+    /* Marca: azul noche + ámbar */
+    --navy: #0f1626; --navy-soft: #182136; --navy-line: #263150;
+    --accent: #f59e0b; --accent-soft: #fbbf24;
+    /* Contenido */
+    --bg: #f3f6fa; --card: #ffffff; --line: #e3e8ef;
+    --ink: #101828; --ink-dim: #566175; --ink-faint: #8b95a5;
+    --go: #15803d; --go-bg: #e8f6ed;
+    --bad: #c2321f;
     --line-diesel: #c2410c; --line-g95: #2563eb;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #17181a; --card: #1e2022; --line: #2c2e30;
-      --ink: #f1f0ec; --ink-dim: #a3a29b; --ink-faint: #75746c;
-      --go: #47c586; --go-bg: #17301f;
-      --bad: #ff8a80;
+      --bg: #101726; --card: #172033; --line: #26314a;
+      --ink: #eef2f8; --ink-dim: #a3adc0; --ink-faint: #76839a;
+      --go: #4ade80; --go-bg: #12301f;
+      --bad: #fb7185;
       --line-diesel: #f0975a; --line-g95: #6ea8fe;
     }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--ink); font-family: 'Barlow', system-ui, sans-serif; -webkit-font-smoothing: antialiased; min-height: 100vh; }
-  .wrap { max-width: 600px; margin: 0 auto; padding: 26px 16px 50px; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Barlow', system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
   a { color: inherit; }
-  header { margin-bottom: 18px; }
-  .breadcrumb { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 10px; }
-  .breadcrumb a { color: var(--ink-dim); text-decoration: none; }
-  .breadcrumb a:hover { text-decoration: underline; }
-  h1 { font-weight: 700; font-size: 22px; margin: 0 0 4px; }
-  .sub { font-size: 13.5px; color: var(--ink-faint); }
-  .search-box { margin-top: 18px; }
-  .search-box form { display: flex; gap: 8px; }
-  .search-box input {
-    flex: 1; width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
-    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-    padding: 12px 14px; outline: none;
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  h1, h2, h3, .display { font-family: 'Barlow Condensed', 'Barlow', system-ui, sans-serif; letter-spacing: .01em; }
+
+  /* --- Cabecera --- */
+  .topbar { background: var(--navy); border-bottom: 1px solid var(--navy-line); }
+  .topbar-inner { max-width: 920px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; color: #fff; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 19px; letter-spacing: .04em; }
+  .logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--navy); display: flex; align-items: center; justify-content: center; }
+  .logo-mark svg { width: 17px; height: 17px; }
+  .logo em { font-style: normal; color: var(--accent); }
+  .topbar-actions { margin-left: auto; display: flex; gap: 8px; }
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 7px; font-family: 'Barlow', sans-serif;
+    font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+    color: #dbe3f0; background: transparent; border: 1px solid var(--navy-line);
+    border-radius: 999px; padding: 8px 14px; cursor: pointer; text-decoration: none;
   }
-  .search-box input:focus { border-color: var(--ink-faint); }
-  .search-box button {
-    font-family: inherit; font-size: 14px; font-weight: 600; color: var(--ink);
-    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
-    padding: 0 16px; cursor: pointer;
+  .btn-ghost svg { width: 15px; height: 15px; }
+  .btn-ghost:hover { border-color: var(--accent); color: #fff; }
+  .btn-ghost.on { background: var(--accent); border-color: var(--accent); color: var(--navy); }
+
+  /* --- Héroe --- */
+  .hero { background: var(--navy); color: #fff; padding: 26px 0 30px; }
+  .hero-inner { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600;
+    color: var(--accent-soft); background: rgba(245,158,11,.10); border: 1px solid rgba(245,158,11,.28);
+    border-radius: 999px; padding: 6px 13px;
   }
-  .search-hint { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
-  .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 22px; }
+  .status-pill i { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+  .hero h1 { font-size: 40px; font-weight: 700; line-height: 1.05; margin: 16px 0 10px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero-sub { font-size: 15px; line-height: 1.55; color: #aab6c9; margin: 0 0 20px; max-width: 620px; }
+  .hero-sub b { color: #fff; font-weight: 600; }
+
+  /* Cifras */
+  .stats { display: flex; flex-wrap: wrap; gap: 26px; margin-top: 20px; }
+  .stats div { display: flex; flex-direction: column; }
+  .stats b { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
+  .stats span { font-size: 12px; color: #8996aa; margin-top: 3px; }
+
+  /* CTAs */
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .btn-primary, .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px; font-family: 'Barlow', sans-serif;
+    font-size: 14.5px; font-weight: 600; border-radius: 999px; padding: 11px 20px;
+    cursor: pointer; text-decoration: none; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--accent); color: var(--navy); box-shadow: 0 6px 20px rgba(245,158,11,.25); }
+  .btn-primary:hover { background: var(--accent-soft); }
+  .btn-outline { background: transparent; color: #dbe3f0; border-color: var(--navy-line); }
+  .btn-outline:hover { border-color: var(--accent); color: #fff; }
+  .btn-primary svg, .btn-outline svg { width: 17px; height: 17px; }
+
+  /* --- Contenido --- */
+  main { padding: 26px 0 50px; }
+  .section { margin-top: 30px; }
+  .section > h2 { font-size: 24px; font-weight: 700; margin: 0 0 4px; }
+  .section > .section-sub { font-size: 13.5px; color: var(--ink-dim); margin: 0 0 14px; line-height: 1.5; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+
+  /* Tabla de precios */
+  .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); }
   .col-labels span:nth-child(2), .col-labels span:nth-child(3) { text-align: right; }
   ul.stations { list-style: none; margin: 0; padding: 0; }
   li.station { border-bottom: 1px solid var(--line); }
+  li.station:last-child { border-bottom: none; }
   a.row { display: grid; grid-template-columns: 1fr 62px 62px 20px; align-items: center; gap: 10px; padding: 13px 4px; text-decoration: none; color: inherit; }
   .id-cell { display: flex; align-items: center; gap: 11px; min-width: 0; }
   .mono { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; flex-shrink: 0; }
   .name-block { min-width: 0; }
   .name { font-weight: 600; font-size: 15px; }
-  .best-tag { font-size: 10.5px; font-weight: 600; color: var(--go); background: var(--go-bg); border-radius: 2px; padding: 1px 5px; margin-left: 6px; }
+  .best-tag { font-size: 10.5px; font-weight: 700; color: var(--go); background: var(--go-bg); border-radius: 3px; padding: 1px 5px; margin-left: 6px; letter-spacing: .02em; }
   .addr { font-size: 12px; color: var(--ink-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .price { text-align: right; font-variant-numeric: tabular-nums; font-size: 14.5px; }
   .price.best { color: var(--go); font-weight: 700; }
   .price.na { color: var(--ink-faint); }
+  .dist { font-size: 12px; color: var(--ink-dim); white-space: nowrap; }
   .trend { font-size: 10.5px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 1px; }
   .trend-up { color: var(--bad); }
   .trend-down { color: var(--go); }
   .pin { color: var(--ink-faint); display: flex; justify-content: center; }
   .pin svg { width: 16px; height: 16px; }
+  .empty { padding: 24px 4px; color: var(--ink-faint); font-size: 14px; }
+
+  /* Chips de precio (marcas) */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    display: inline-flex; align-items: baseline; gap: 7px; font-size: 13px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 7px 13px;
+    text-decoration: none;
+  }
+  .chip .chip-name { font-weight: 600; letter-spacing: .02em; }
+  .chip .chip-val { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .chip .chip-val.cheap { color: var(--go); }
+  .chip .chip-val.dear { color: var(--bad); }
+
+  /* Tabla de provincias */
+  .prov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 22px; }
+  .prov-row { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: baseline; padding: 9px 2px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .prov-row .prov-name { font-weight: 500; }
+  .prov-row .prov-val { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 52px; text-align: right; }
+  .prov-row .prov-val.second { font-weight: 400; color: var(--ink-dim); }
+  .prov-row .prov-val.cheap { color: var(--go); }
+  .prov-row .prov-val.dear { color: var(--bad); }
+
+  /* Pie */
+  footer { border-top: 1px solid var(--line); margin-top: 34px; padding: 20px 0 0; font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; }
+  footer .note { margin-bottom: 6px; }
+  .legal-links { margin-top: 8px; }
+  .legal-links a { color: var(--ink-faint); text-decoration: underline; }
+
+  .cookie-banner { position: fixed; left: 12px; right: 12px; bottom: 12px; max-width: 560px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: 0 8px 30px rgba(0,0,0,.22); font-size: 12.5px; color: var(--ink-dim); z-index: 999; }
+  .cookie-banner p { margin: 0 0 10px; line-height: 1.5; }
+  .cookie-banner a { color: var(--ink); }
+  .cookie-banner button { font-family: inherit; font-size: 13px; font-weight: 600; color: var(--navy); background: var(--accent); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+
+  @media (max-width: 560px) {
+    .hero h1 { font-size: 31px; }
+    .hero { padding: 20px 0 24px; }
+    .stats { gap: 18px; }
+    .stats b { font-size: 23px; }
+    .btn-primary, .btn-outline { flex: 1; justify-content: center; }
+  }
+</style>
+<style>
+  .breadcrumb { font-size: 12.5px; color: #8996aa; margin-bottom: 12px; }
+  .breadcrumb a { color: #b9c4d6; text-decoration: none; }
+  .breadcrumb a:hover { color: #fff; text-decoration: underline; }
+
+  .search-box form { display: flex; gap: 8px; }
+  .search-box input {
+    flex: 1; min-width: 0; font-family: inherit; font-size: 15px; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 13px 14px; outline: none;
+  }
+  .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+  .search-box button {
+    font-family: inherit; font-size: 14px; font-weight: 600; color: var(--navy);
+    background: var(--accent); border: none; border-radius: 12px; padding: 0 20px; cursor: pointer;
+  }
+  .search-box button:hover { background: var(--accent-soft); }
+  .search-hint { font-size: 12.5px; color: #8996aa; margin-top: 9px; }
+  /* Los filtros viven sobre el fondo oscuro del héroe */
+  .hero .filters select { background: var(--navy-soft); border-color: var(--navy-line); color: #dbe3f0; }
+  .hero .filters select.on { border-color: var(--accent); color: var(--accent-soft); }
+
+  .map-section.hidden { display: none; }
+  #map { height: 280px; }
+
+  .price-chart {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px;
+  }
+  .price-chart svg { display: block; }
+  .price-chart-empty p { font-size: 13.5px; color: var(--ink-dim); margin: 0; }
+  .chart-legend { display: flex; gap: 16px; margin-top: 10px; font-size: 12.5px; color: var(--ink-dim); }
+  .chart-legend span { display: flex; align-items: center; gap: 6px; }
+  .chart-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  /* La gráfica trae su propio h2; lo alineamos con los de las demás secciones. */
+  .price-chart h2 { font-size: 24px; font-weight: 700; margin: 0 0 12px; }
+
+  .neighbors .list { display: flex; flex-wrap: wrap; gap: 7px; }
+  .neighbors .list a {
+    font-size: 13px; color: var(--ink-dim); text-decoration: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px;
+  }
+  .neighbors .list a:hover { color: var(--ink); border-color: var(--ink-faint); }
   .filters { display: flex; gap: 8px; margin-top: 10px; }
   .filters select {
     flex: 1; min-width: 0; font-family: inherit; font-size: 13.5px; color: var(--ink);
@@ -113,44 +249,33 @@
   body.single-fuel a.row { grid-template-columns: 1fr 62px 20px; }
   body.single-fuel .col-labels .col-p2,
   body.single-fuel a.row .price.col-p2 { display: none; }
-  .map-section { margin-top: 28px; }
-  .map-section h2 { font-size: 14px; margin: 0 0 10px; }
-  .map-section.hidden { display: none; }
-  .price-chart { margin-top: 28px; }
-  .price-chart h2 { font-size: 14px; margin: 0 0 10px; }
-  .price-chart svg { display: block; }
-  .price-chart-empty p { font-size: 13px; color: var(--ink-faint); margin: 0; }
-  .chart-legend { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: var(--ink-dim); }
-  .chart-legend span { display: flex; align-items: center; gap: 6px; }
-  .chart-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  .neighbors { margin-top: 28px; }
-  .neighbors h2 { font-size: 14px; margin: 0 0 8px; }
-  .neighbors .list { font-size: 13px; color: var(--ink-dim); line-height: 1.9; }
-  .neighbors .list a { text-decoration: none; color: var(--ink-dim); }
-  .neighbors .list a:hover { text-decoration: underline; }
-  .neighbors .sep { color: var(--ink-faint); margin: 0 6px; }
-  footer { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--ink-faint); line-height: 1.55; }
-  footer .note { margin-bottom: 6px; }
-  .legal-links a { color: var(--ink-faint); text-decoration: underline; }
-  .cookie-banner { position: fixed; left: 12px; right: 12px; bottom: 12px; max-width: 560px; margin: 0 auto; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: 0 6px 24px rgba(0,0,0,.18); font-size: 12.5px; color: var(--ink-dim); z-index: 999; }
-  .cookie-banner p { margin: 0 0 10px; line-height: 1.5; }
-  .cookie-banner a { color: var(--ink); }
-  .cookie-banner button { font-family: inherit; font-size: 13px; font-weight: 600; color: #fff; background: var(--go); border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="../../../"><span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v15"/><path d="M3 20h11"/><path d="M6.5 8.5h4"/><path d="M16 9l2.2 2.2a2 2 0 0 1 .6 1.4V17a1.6 1.6 0 0 0 3.2 0v-6"/></svg></span>GASOLINA<em>CV</em></a>
+    <div class="topbar-actions">
+      <a class="btn-ghost" href="../../../">Buscador</a>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Castellón · Alcalà de Xivert</div>
+    <div class="status-pill"><i></i> Actualizado 18/09/2026 12:40:30 con datos del Ministerio</div>
+
     <h1>Gasolinera más barata en Alcalà de Xivert hoy</h1>
-    <div class="sub">Actualizado 18/09/2026 12:32:36 · precios en €/l · Castellón</div>
+    <p class="hero-sub">Las <b>3 gasolineras</b> de Alcalà de Xivert (Castellón) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
+
     <div class="search-box">
       <form action="../../../" method="get" id="search-form">
-        <input type="text" name="q" placeholder="Busca otro CP, población o gasolinera..." autocomplete="off">
+        <input type="text" name="q" placeholder="Busca otro municipio, CP o gasolinera..." autocomplete="off">
         <button type="submit">Buscar</button>
       </form>
     </div>
-    <div class="search-hint">Escribe y pulsa "Buscar" para ver los resultados en el buscador general.</div>
     <div class="filters hidden" id="filters">
       <select id="filter-brand" aria-label="Filtrar por marca">
         <option value="">Todas las marcas</option>
@@ -167,14 +292,24 @@
         <option value="gnc">Gas natural (GNC)</option>
       </select>
     </div>
-    <div class="search-hint" id="filter-count"></div>
-  </header>
+    <div class="search-hint" id="filter-count">Escribe y pulsa "Buscar" para ir al buscador general.</div>
 
-  <div class="col-labels">
-    <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
+    <div class="stats">
+      <div><b>1,969</b><span>diésel más barato</span></div>
+      <div><b>1,937</b><span>gasolina 95 más barata</span></div>
+      <div><b>3</b><span>gasolineras</span></div>
+    </div>
   </div>
+</header>
 
-  <ul class="stations">
+<main>
+  <div class="wrap">
+    <section class="section" style="margin-top:0">
+      <div class="panel">
+        <div class="col-labels">
+          <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
+        </div>
+        <ul class="stations">
     <li class="station" data-brand="Otras" data-p-diesel="1.976" data-p-g95="1.937">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=40.256333,0.2445" target="_blank" rel="noopener">
         <div class="id-cell">
@@ -223,13 +358,17 @@
         </div>
       </a>
     </li>
-  </ul>
+        </ul>
+      </div>
+    </section>
 
-  <section class="map-section hidden" id="map-section">
-    <h2>Mapa de gasolineras en Alcalà de Xivert</h2>
-    <div id="map"></div>
-  </section>
+    <section class="section map-section hidden" id="map-section">
+      <h2>Mapa de gasolineras en Alcalà de Xivert</h2>
+      <p class="section-sub">Toca un marcador para ver sus precios y abrir la ruta.</p>
+      <div id="map"></div>
+    </section>
 
+    <section class="section">
 <div class="price-chart">
     <h2>Precio medio en Alcalà de Xivert (últimos 30 días)</h2>
     <svg viewBox="0 0 320 64" width="100%" height="64" role="img" aria-label="Precio medio en Alcalà de Xivert (últimos 30 días)">
@@ -241,18 +380,73 @@
       <span><i style="background:var(--line-g95)"></i>Gasolina 95</span>
     </div>
   </div>
+    </section>
 
-  <div class="neighbors">
-    <h2>Otras poblaciones cercanas en Castellón</h2>
-    <div class="list"><a href="../albocasser/">Albocàsser</a><span class="sep">·</span><a href="../alcora-l/">Alcora (l&#39;)</a><span class="sep">·</span><a href="../almazora-almassora/">Almazora/Almassora</a><span class="sep">·</span><a href="../almenara/">Almenara</a><span class="sep">·</span><a href="../alquerias-del-nino-perdido/">Alquerías del Niño Perdido</a><span class="sep">·</span><a href="../altura/">Altura</a><span class="sep">·</span><a href="../artana/">Artana</a><span class="sep">·</span><a href="../atzeneta-del-maestrat/">Atzeneta del Maestrat</a><span class="sep">·</span><a href="../barracas/">Barracas</a><span class="sep">·</span><a href="../bejis/">Bejís</a><span class="sep">·</span><a href="../benasal/">Benasal</a><span class="sep">·</span><a href="../benicarlo/">Benicarló</a><span class="sep">·</span><a href="../benicasim-benicassim/">Benicasim/Benicàssim</a><span class="sep">·</span><a href="../benlloch/">Benlloch</a><span class="sep">·</span><a href="../betxi/">Betxí</a><span class="sep">·</span><a href="../borriol/">Borriol</a><span class="sep">·</span><a href="../burriana/">Burriana</a><span class="sep">·</span><a href="../cabanes/">Cabanes</a><span class="sep">·</span><a href="../castellon-de-la-plana-castello-de-la-plana/">Castellón de la Plana/Castelló de la Plana</a><span class="sep">·</span><a href="../chilches-xilxes/">Chilches/Xilxes</a><span class="sep">·</span><a href="../coves-de-vinroma-les/">Coves de Vinromà (les)</a><span class="sep">·</span><a href="../forcall/">Forcall</a><span class="sep">·</span><a href="../jana-la/">Jana (la)</a><span class="sep">·</span><a href="../jerica/">Jérica</a><span class="sep">·</span><a href="../llosa-la/">Llosa (la)</a><span class="sep">·</span><a href="../lucena-del-cid/">Lucena del Cid</a><span class="sep">·</span><a href="../moncofa/">Moncofa</a><span class="sep">·</span><a href="../montanejos/">Montanejos</a><span class="sep">·</span><a href="../morella/">Morella</a><span class="sep">·</span><a href="../nules/">Nules</a><span class="sep">·</span><a href="../olocau-del-rey/">Olocau del Rey</a><span class="sep">·</span><a href="../onda/">Onda</a><span class="sep">·</span><a href="../oropesa-del-mar-orpesa/">Oropesa del Mar/Orpesa</a><span class="sep">·</span><a href="../peniscola/">Peñíscola</a><span class="sep">·</span><a href="../pobla-tornesa-la/">Pobla Tornesa (la)</a><span class="sep">·</span><a href="../ribesalbes/">Ribesalbes</a><span class="sep">·</span><a href="../san-rafael-del-rio/">San Rafael del Río</a><span class="sep">·</span><a href="../sant-joan-de-moro/">Sant Joan de Moró</a><span class="sep">·</span><a href="../sant-mateu/">Sant Mateu</a><span class="sep">·</span><a href="../santa-magdalena-de-pulpis/">Santa Magdalena de Pulpis</a><span class="sep">·</span><a href="../segorbe/">Segorbe</a><span class="sep">·</span><a href="../soneja/">Soneja</a><span class="sep">·</span><a href="../sot-de-ferrer/">Sot de Ferrer</a><span class="sep">·</span><a href="../torreblanca/">Torreblanca</a><span class="sep">·</span><a href="../vall-d-alba/">Vall D&#39;alba</a><span class="sep">·</span><a href="../vall-d-uixo-la/">Vall D&#39;uixó (la)</a><span class="sep">·</span><a href="../vilafames/">Vilafamés</a><span class="sep">·</span><a href="../villafranca-del-cid/">Villafranca del Cid</a><span class="sep">·</span><a href="../villarreal-vila-real/">Villarreal/Vila-Real</a><span class="sep">·</span><a href="../villavieja/">Villavieja</a><span class="sep">·</span><a href="../vinaros/">Vinaròs</a><span class="sep">·</span><a href="../vistabella-del-maestrazgo/">Vistabella del Maestrazgo</a><span class="sep">·</span><a href="../viver/">Viver</a></div>
+    <section class="section neighbors">
+      <h2>Otras poblaciones de Castellón</h2>
+      <p class="section-sub">Compara con las poblaciones vecinas antes de repostar.</p>
+      <div class="list"><a href="../albocasser/">Albocàsser</a>
+      <a href="../alcora-l/">Alcora (l&#39;)</a>
+      <a href="../almazora-almassora/">Almazora/Almassora</a>
+      <a href="../almenara/">Almenara</a>
+      <a href="../alquerias-del-nino-perdido/">Alquerías del Niño Perdido</a>
+      <a href="../altura/">Altura</a>
+      <a href="../artana/">Artana</a>
+      <a href="../atzeneta-del-maestrat/">Atzeneta del Maestrat</a>
+      <a href="../barracas/">Barracas</a>
+      <a href="../bejis/">Bejís</a>
+      <a href="../benasal/">Benasal</a>
+      <a href="../benicarlo/">Benicarló</a>
+      <a href="../benicasim-benicassim/">Benicasim/Benicàssim</a>
+      <a href="../benlloch/">Benlloch</a>
+      <a href="../betxi/">Betxí</a>
+      <a href="../borriol/">Borriol</a>
+      <a href="../burriana/">Burriana</a>
+      <a href="../cabanes/">Cabanes</a>
+      <a href="../castellon-de-la-plana-castello-de-la-plana/">Castellón de la Plana/Castelló de la Plana</a>
+      <a href="../chilches-xilxes/">Chilches/Xilxes</a>
+      <a href="../coves-de-vinroma-les/">Coves de Vinromà (les)</a>
+      <a href="../forcall/">Forcall</a>
+      <a href="../jana-la/">Jana (la)</a>
+      <a href="../jerica/">Jérica</a>
+      <a href="../llosa-la/">Llosa (la)</a>
+      <a href="../lucena-del-cid/">Lucena del Cid</a>
+      <a href="../moncofa/">Moncofa</a>
+      <a href="../montanejos/">Montanejos</a>
+      <a href="../morella/">Morella</a>
+      <a href="../nules/">Nules</a>
+      <a href="../olocau-del-rey/">Olocau del Rey</a>
+      <a href="../onda/">Onda</a>
+      <a href="../oropesa-del-mar-orpesa/">Oropesa del Mar/Orpesa</a>
+      <a href="../peniscola/">Peñíscola</a>
+      <a href="../pobla-tornesa-la/">Pobla Tornesa (la)</a>
+      <a href="../ribesalbes/">Ribesalbes</a>
+      <a href="../san-rafael-del-rio/">San Rafael del Río</a>
+      <a href="../sant-joan-de-moro/">Sant Joan de Moró</a>
+      <a href="../sant-mateu/">Sant Mateu</a>
+      <a href="../santa-magdalena-de-pulpis/">Santa Magdalena de Pulpis</a>
+      <a href="../segorbe/">Segorbe</a>
+      <a href="../soneja/">Soneja</a>
+      <a href="../sot-de-ferrer/">Sot de Ferrer</a>
+      <a href="../torreblanca/">Torreblanca</a>
+      <a href="../vall-d-alba/">Vall D&#39;alba</a>
+      <a href="../vall-d-uixo-la/">Vall D&#39;uixó (la)</a>
+      <a href="../vilafames/">Vilafamés</a>
+      <a href="../villafranca-del-cid/">Villafranca del Cid</a>
+      <a href="../villarreal-vila-real/">Villarreal/Vila-Real</a>
+      <a href="../villavieja/">Villavieja</a>
+      <a href="../vinaros/">Vinaròs</a>
+      <a href="../vistabella-del-maestrazgo/">Vistabella del Maestrazgo</a>
+      <a href="../viver/">Viver</a></div>
+    </section>
+
+    <footer>
+      <div class="note">Toca una fila para abrir la dirección en Google Maps.</div>
+      <div>Fuente: Ministerio de Industria, Comercio y Turismo (geoportalgasolineras.es). Se actualiza cada hora vía GitHub Actions.</div>
+      <div class="legal-links"><a href="../../../aviso-legal/">Aviso legal</a> · <a href="../../../privacidad/">Privacidad</a></div>
+    </footer>
   </div>
-
-  <footer>
-    <div class="note">Toca una fila para abrir la dirección en Google Maps.</div>
-    <div>Fuente: Ministerio de Industria, Comercio y Turismo (geoportalgasolineras.es). Se actualiza cada hora vía GitHub Actions.</div>
-    <div class="legal-links"><a href="../../../aviso-legal/">Aviso legal</a> · <a href="../../../privacidad/">Privacidad</a></div>
-  </footer>
-</div>
+</main>
 
 <div id="cookie-banner" class="cookie-banner" hidden>
     <p>Usamos <a href="../../../privacidad/">analítica sin cookies</a> (Plausible) para saber cuánta gente visita el sitio. Si en el futuro activamos publicidad (Google AdSense), pediremos tu consentimiento aparte para sus cookies.</p>
@@ -415,6 +609,7 @@
     var list = document.querySelector("ul.stations");
     if (!rows.length || !brandSelect || !fuelSelect) return;
 
+    var defaultHint = countEl.textContent;
     document.getElementById("filters").classList.remove("hidden");
 
     function priceOf(row, fuelId) {
@@ -504,7 +699,7 @@
 
       countEl.textContent = (brand || fuel)
         ? visible.length + (visible.length === 1 ? " gasolinera" : " gasolineras") + " de " + rows.length
-        : "";
+        : defaultHint;
     }
 
     brandSelect.addEventListener("change", apply);
