@@ -1,10 +1,12 @@
 // Genera la página estática de una población: docs/gasolineras/{provincia}/{municipio}/index.html
 
-import { SITE_URL, SITE_NAME } from "../config.mjs";
+import { SITE_URL, SITE_NAME, FUELS, DEFAULT_FUELS } from "../config.mjs";
 import { escapeHtml, fmtPrice, mapsUrl } from "./format.mjs";
 import { fill } from "./template.mjs";
 import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
 import { renderMapHead, renderMapScript, mapStationsJson } from "./map.mjs";
+import { renderFilterBar, renderFilterStyles, renderFuelCatalogScript } from "./filters.mjs";
+import { brandsPresent } from "./group.mjs";
 
 // diff: número (positivo = ha subido, negativo = ha bajado) o null si no
 // hay histórico de hace 7 días para comparar.
@@ -16,22 +18,40 @@ function trendHtml(diff) {
   return `<div class="trend ${up ? "trend-up" : "trend-down"}">${arrow} ${sign}${fmtPrice(Math.abs(diff))}</div>`;
 }
 
-function stationRowHtml(s, minDiesel, minG95, trends) {
-  const isDieselBest = s.diesel !== null && s.diesel === minDiesel;
-  const isG95Best = s.g95 !== null && s.g95 === minG95;
-  const dieselTrend = trends ? trends.get(`${s.ideess}|diesel`) : undefined;
-  const g95Trend = trends ? trends.get(`${s.ideess}|g95`) : undefined;
-  return `    <li class="station">
+// Precio y tendencia de cada carburante como atributos de la fila, para que
+// el filtro del navegador pueda reordenar y reetiquetar las filas que ya
+// vienen renderizadas sin volver a pedir nada.
+function fuelDataAttrs(s, trends) {
+  return FUELS.map((f) => {
+    const price = s.prices[f.id];
+    const trend = trends ? trends.get(`${s.ideess}|${f.id}`) : undefined;
+    return (
+      (price !== null && price !== undefined ? ` data-p-${f.id}="${price}"` : "") +
+      (trend !== undefined ? ` data-t-${f.id}="${trend}"` : "")
+    );
+  }).join("");
+}
+
+function stationRowHtml(s, mins, trends) {
+  const isBest = DEFAULT_FUELS.some((id) => s.prices[id] !== null && s.prices[id] === mins[id]);
+
+  const priceCells = DEFAULT_FUELS.map((id, i) => {
+    const price = s.prices[id];
+    const best = price !== null && price === mins[id];
+    const cls = "price" + (i === 1 ? " col-p2" : "") + (best ? " best" : "") + (price === null ? " na" : "");
+    return `<div class="${cls}">${fmtPrice(price)}${trendHtml(trends ? trends.get(`${s.ideess}|${id}`) : undefined)}</div>`;
+  }).join("\n        ");
+
+  return `    <li class="station" data-brand="${escapeHtml(s.brand)}"${fuelDataAttrs(s, trends)}>
       <a class="row" href="${escapeHtml(mapsUrl(s))}" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:${s.color}">${escapeHtml(s.initials)}</div>
           <div class="name-block">
-            <div class="name">${escapeHtml(s.name)}${isDieselBest || isG95Best ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
+            <div class="name">${escapeHtml(s.name)}${isBest ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
             <div class="addr">${escapeHtml(s.addr)}${s.municipio ? " · " + escapeHtml(s.municipio) : ""}</div>
           </div>
         </div>
-        <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmtPrice(s.diesel)}${trendHtml(dieselTrend)}</div>
-        <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmtPrice(s.g95)}${trendHtml(g95Trend)}</div>
+        ${priceCells}
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -89,12 +109,15 @@ export function renderMunicipioPage(
     plausibleDomain
   }
 ) {
-  const dieselVals = stationsSorted.map((s) => s.diesel).filter((v) => v !== null);
-  const g95Vals = stationsSorted.map((s) => s.g95).filter((v) => v !== null);
-  const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
-  const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
+  const mins = {};
+  for (const id of DEFAULT_FUELS) {
+    const values = stationsSorted.map((s) => s.prices[id]).filter((v) => v !== null);
+    mins[id] = values.length ? Math.min(...values) : null;
+  }
+  const minDiesel = mins.diesel;
+  const minG95 = mins.g95;
 
-  const rowsHtml = stationsSorted.map((s) => stationRowHtml(s, minDiesel, minG95, trends)).join("\n");
+  const rowsHtml = stationsSorted.map((s) => stationRowHtml(s, mins, trends)).join("\n");
 
   const neighborsHtml =
     municipiosVecinos.map(([slug, m]) => `<a href="../${slug}/">${escapeHtml(m.nombre)}</a>`).join('<span class="sep">·</span>') ||
@@ -125,6 +148,9 @@ export function renderMunicipioPage(
     MAP_HEAD: renderMapHead(),
     MAP_SCRIPT: renderMapScript(),
     MAP_STATIONS_JSON: mapStationsJson(stationsSorted),
+    FILTER_STYLES: renderFilterStyles(),
+    FILTER_BAR: renderFilterBar(brandsPresent(stationsSorted), { hidden: true }),
+    FUEL_CATALOG_SCRIPT: renderFuelCatalogScript(),
     PLAUSIBLE_SCRIPT: renderAnalyticsScript(plausibleDomain),
     LEGAL_LINKS: renderLegalFooterLinks("../../../"),
     COOKIE_BANNER: renderCookieBanner("../../../privacidad/")

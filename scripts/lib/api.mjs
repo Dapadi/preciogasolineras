@@ -1,8 +1,8 @@
 // Descarga y normalización de los datos de la API de precios de
 // carburantes del Ministerio.
 
-import { API_URL } from "../config.mjs";
-import { colorFromName, initialsFromName } from "./format.mjs";
+import { API_URL, FUELS } from "../config.mjs";
+import { brandFromName, colorFromName, initialsFromName } from "./format.mjs";
 
 function parsePrice(v) {
   if (!v) return null;
@@ -40,9 +40,17 @@ export async function fetchStations(provincias) {
 
     for (const e of all) {
       const name = e["Rótulo"] || "Gasolinera";
-      const diesel = parsePrice(e["Precio Gasoleo A"]);
-      const g95 = parsePrice(e["Precio Gasolina 95 E5"]);
-      if (diesel === null && g95 === null) continue;
+
+      // Precio de cada carburante del catálogo (null si esta gasolinera no
+      // lo vende). Si no vende ninguno de los que seguimos, se descarta.
+      const prices = {};
+      let sellsSomething = false;
+      for (const fuel of FUELS) {
+        const price = parsePrice(e[fuel.apiField]);
+        prices[fuel.id] = price;
+        if (price !== null) sellsSomething = true;
+      }
+      if (!sellsSomething) continue;
 
       const municipio = (e["Municipio"] || "").trim();
       // Algunas provincias vienen como "VALENCIA/VALÈNCIA": nos quedamos
@@ -59,8 +67,8 @@ export async function fetchStations(provincias) {
         cp: (e["C.P."] || "").trim(),
         municipio,
         provincia,
-        diesel,
-        g95,
+        prices,
+        brand: brandFromName(name),
         lat: parseCoord(e["Latitud"]),
         lng: parseCoord(e["Longitud (WGS84)"]),
         color: colorFromName(name),

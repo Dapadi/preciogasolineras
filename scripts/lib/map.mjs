@@ -5,9 +5,13 @@
 // El script expone un único global, window.FuelMap, con:
 //   FuelMap.render(items, pos)
 // donde items son gasolineras ({ name, addr, municipio, lat, lng, color,
-// initials, diesel, g95 }) y pos es { lat, lng } con la ubicación del
-// usuario, o null. Si no hay nada que pintar (o Leaflet no ha cargado), el
-// contenedor #map se oculta y la página sigue funcionando igual.
+// initials, prices }) y pos es { lat, lng } con la ubicación del usuario, o
+// null. `prices` lleva solo los carburantes que esa gasolinera vende. Si no
+// hay nada que pintar (o Leaflet no ha cargado), el contenedor #map se
+// oculta y la página sigue funcionando igual.
+
+import { FUELS } from "../config.mjs";
+import { clientStationsJson } from "./stations-json.mjs";
 
 const LEAFLET_VERSION = "1.9.4";
 const LEAFLET_CSS_SRI = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
@@ -34,7 +38,7 @@ export function renderMapHead() {
   .map-popup { font-family: 'Barlow', system-ui, sans-serif; min-width: 160px; }
   .map-popup .name { font-weight: 600; font-size: 13.5px; margin-bottom: 2px; }
   .map-popup .addr { font-size: 11.5px; color: #6f6e66; margin-bottom: 6px; }
-  .map-popup .prices { display: flex; gap: 12px; font-size: 12.5px; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
+  .map-popup .prices { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 12.5px; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
   .map-popup .prices b { font-weight: 700; }
   .map-popup a.go { font-size: 12px; font-weight: 600; color: var(--go); text-decoration: none; }
 </style>`;
@@ -42,10 +46,15 @@ export function renderMapHead() {
 
 // Va al final del <body>, antes de los scripts propios de cada página.
 export function renderMapScript() {
+  // Etiqueta corta de cada carburante, para que el popup pueda rotular los
+  // precios sin volver a mandar el catálogo entero en cada página.
+  const labels = JSON.stringify(Object.fromEntries(FUELS.map((f) => [f.id, f.short])));
+
   return `<script src="https://unpkg.com/leaflet@${LEAFLET_VERSION}/dist/leaflet.js" integrity="${LEAFLET_JS_SRI}" crossorigin=""></script>
 <script>
 (function () {
   var map = null, markersLayer = null, userMarker = null;
+  var FUEL_LABELS = ${labels};
 
   function fmt(n) { return n === null || n === undefined ? "\\u2014" : n.toFixed(3).replace(".", ","); }
 
@@ -87,10 +96,18 @@ export function renderMapScript() {
   }
 
   function popupHtml(s) {
+    var prices = s.prices || {};
+    var cells = Object.keys(FUEL_LABELS)
+      .filter(function (id) { return prices[id] !== null && prices[id] !== undefined; })
+      .map(function (id) {
+        return '<span>' + esc(FUEL_LABELS[id]) + ' <b>' + fmt(prices[id]) + '</b></span>';
+      })
+      .join("");
+
     return '<div class="map-popup">' +
       '<div class="name">' + esc(s.name) + '</div>' +
       '<div class="addr">' + esc(s.addr) + (s.municipio ? " \\u00b7 " + esc(s.municipio) : "") + '</div>' +
-      '<div class="prices"><span>Di\\u00e9sel <b>' + fmt(s.diesel) + '</b></span><span>G. 95 <b>' + fmt(s.g95) + '</b></span></div>' +
+      '<div class="prices">' + cells + '</div>' +
       '<a class="go" href="' + esc(mapsUrl(s)) + '" target="_blank" rel="noopener">C\\u00f3mo llegar \\u2192</a>' +
       '</div>';
   }
@@ -143,21 +160,7 @@ export function renderMapScript() {
 </script>`;
 }
 
-// Datos mínimos que necesita el mapa de cada gasolinera (el resto de campos
-// del objeto no se embeben en la página para no engordar el HTML).
+// Gasolineras que el mapa puede pintar: las que traen coordenadas.
 export function mapStationsJson(stations) {
-  const items = stations
-    .filter((s) => s.lat && s.lng)
-    .map((s) => ({
-      name: s.name,
-      addr: s.addr,
-      municipio: s.municipio,
-      lat: s.lat,
-      lng: s.lng,
-      color: s.color,
-      initials: s.initials,
-      diesel: s.diesel,
-      g95: s.g95
-    }));
-  return JSON.stringify(items).replace(/</g, "\\u003c");
+  return clientStationsJson(stations.filter((s) => s.lat && s.lng));
 }
