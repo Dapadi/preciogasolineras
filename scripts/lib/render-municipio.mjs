@@ -4,6 +4,7 @@ import { SITE_URL, SITE_NAME } from "../config.mjs";
 import { escapeHtml, fmtPrice, mapsUrl } from "./format.mjs";
 import { fill } from "./template.mjs";
 import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
+import { renderMapHead, renderMapScript, mapStationsJson } from "./map.mjs";
 
 // diff: número (positivo = ha subido, negativo = ha bajado) o null si no
 // hay histórico de hace 7 días para comparar.
@@ -121,6 +122,9 @@ export function renderMunicipioPage(
       `<div class="price-chart price-chart-empty"><h2>Evolución de precios (últimos 30 días)</h2><p>Aún no hay histórico suficiente para esta población: vuelve en unos días para ver la gráfica.</p></div>`,
     NEIGHBORS_HTML: neighborsHtml,
     HOME_URL: "../../../",
+    MAP_HEAD: renderMapHead(),
+    MAP_SCRIPT: renderMapScript(),
+    MAP_STATIONS_JSON: mapStationsJson(stationsSorted),
     PLAUSIBLE_SCRIPT: renderAnalyticsScript(plausibleDomain),
     LEGAL_LINKS: renderLegalFooterLinks("../../../"),
     COOKIE_BANNER: renderCookieBanner("../../../privacidad/")

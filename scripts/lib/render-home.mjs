@@ -4,6 +4,7 @@
 import { escapeHtml } from "./format.mjs";
 import { fill } from "./template.mjs";
 import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
+import { renderMapHead, renderMapScript } from "./map.mjs";
 
 function directorioHtml(provinciasOrdenadas) {
   return provinciasOrdenadas
@@ -35,6 +36,8 @@ export function renderHome(template, { stations, updatedAt, provinciasOrdenadas,
     DIRECTORIO_HTML: directorioHtml(provinciasOrdenadas),
     PLAUSIBLE_SCRIPT: renderAnalyticsScript(plausibleDomain),
     LEGAL_LINKS: renderLegalFooterLinks(""),
-    COOKIE_BANNER: renderCookieBanner("privacidad/")
+    COOKIE_BANNER: renderCookieBanner("privacidad/"),
+    MAP_HEAD: renderMapHead(),
+    MAP_SCRIPT: renderMapScript()
   });
 }

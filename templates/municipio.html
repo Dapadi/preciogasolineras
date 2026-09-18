@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">__JSONLD__</script>
+__MAP_HEAD__
 __PLAUSIBLE_SCRIPT__
 <style>
   :root {
@@ -72,6 +73,9 @@ __PLAUSIBLE_SCRIPT__
   .trend-down { color: var(--go); }
   .pin { color: var(--ink-faint); display: flex; justify-content: center; }
   .pin svg { width: 16px; height: 16px; }
+  .map-section { margin-top: 28px; }
+  .map-section h2 { font-size: 14px; margin: 0 0 10px; }
+  .map-section.hidden { display: none; }
   .price-chart { margin-top: 28px; }
   .price-chart h2 { font-size: 14px; margin: 0 0 10px; }
   .price-chart svg { display: block; }
@@ -117,6 +121,11 @@ __PLAUSIBLE_SCRIPT__
 __ROWS_HTML__
   </ul>
 
+  <section class="map-section hidden" id="map-section">
+    <h2>Mapa de gasolineras en __MUNICIPIO_NOMBRE__</h2>
+    <div id="map"></div>
+  </section>
+
 __CHART_HTML__
 
   <div class="neighbors">
@@ -132,5 +141,18 @@ __CHART_HTML__
 </div>
 
 __COOKIE_BANNER__
+
+__MAP_SCRIPT__
+<script>
+  // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
+  // cargado, la sección se queda oculta y la página funciona igual (la tabla
+  // de precios ya viene renderizada en el HTML).
+  (function () {
+    var items = __MAP_STATIONS_JSON__;
+    if (!items.length || typeof L === "undefined") return;
+    document.getElementById("map-section").classList.remove("hidden");
+    FuelMap.render(items, null);
+  })();
+</script>
 </body>
 </html>
