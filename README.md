@@ -43,6 +43,17 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
    siendo por precio). Si el navegador no soporta geolocalización o el
    usuario deniega el permiso, se muestra un aviso y el resto de la página
    sigue funcionando igual.
+6. Encima de la lista aparece un mapa interactivo ([Leaflet](https://leafletjs.com)
+   + tiles de OpenStreetMap, cargados desde CDN) cada vez que hay resultados
+   que mostrar: una búsqueda con texto o el modo "cerca de mí". Cada
+   gasolinera es un marcador circular con sus iniciales (mismo color que en
+   la lista); al tocarlo se abre un popup con nombre, dirección y precios, y
+   un enlace "Cómo llegar" a Google Maps. Con geolocalización activa se
+   añade además un marcador azul con la posición del usuario, y el mapa
+   encuadra automáticamente todos los puntos visibles (`fitBounds`). El mapa
+   se inicializa de forma perezosa (solo la primera vez que hace falta) y se
+   oculta por completo cuando no hay ni búsqueda ni ubicación activa, para
+   no penalizar la carga inicial de la home.
 
 ## Puesta en marcha (10 minutos)
 

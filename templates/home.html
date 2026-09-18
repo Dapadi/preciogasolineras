@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 __PLAUSIBLE_SCRIPT__
 <style>
   :root {
@@ -49,6 +50,26 @@ __PLAUSIBLE_SCRIPT__
   .geo-status { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
   .geo-status.error { color: #c24444; }
   .dist { font-size: 12px; color: var(--ink-dim); white-space: nowrap; }
+  #map { height: 230px; border-radius: 12px; border: 1px solid var(--line); margin-top: 14px; background: var(--card); }
+  #map.hidden { display: none; }
+  @media (prefers-color-scheme: dark) {
+    #map .leaflet-tile { filter: grayscale(0.35) invert(92%) hue-rotate(180deg) brightness(0.95) contrast(90%); }
+    #map .leaflet-control-zoom a { background: var(--card); color: var(--ink); border-color: var(--line) !important; }
+    #map .leaflet-control-attribution { background: rgba(30,32,34,.75); color: var(--ink-faint); }
+    #map .leaflet-control-attribution a { color: var(--ink-dim); }
+  }
+  .station-pin { background: transparent; border: none; }
+  .station-pin-inner {
+    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 10.5px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35);
+  }
+  .user-pin { background: #2f7dd6; width: 14px; height: 14px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2px #2f7dd6, 0 1px 5px rgba(0,0,0,.4); }
+  .map-popup { font-family: 'Barlow', system-ui, sans-serif; min-width: 160px; }
+  .map-popup .name { font-weight: 600; font-size: 13.5px; margin-bottom: 2px; }
+  .map-popup .addr { font-size: 11.5px; color: #6f6e66; margin-bottom: 6px; }
+  .map-popup .prices { display: flex; gap: 12px; font-size: 12.5px; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
+  .map-popup .prices b { font-weight: 700; }
+  .map-popup a.go { font-size: 12px; font-weight: 600; color: var(--go); text-decoration: none; }
   .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 14px; }
   .col-labels span:nth-child(2), .col-labels span:nth-child(3) { text-align: right; }
   ul.stations { list-style: none; margin: 0; padding: 0; }
@@ -99,6 +120,8 @@ __PLAUSIBLE_SCRIPT__
     <div class="geo-status" id="geo-status"></div>
   </header>
 
+  <div id="map" class="hidden"></div>
+
   <div class="col-labels">
     <span>Gasolinera</span><span>Diésel</span><span>G. 95</span><span></span>
   </div>
@@ -119,6 +142,7 @@ __DIRECTORIO_HTML__
 
 __COOKIE_BANNER__
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
   const stations = __STATIONS_JSON__;
   const MAX_RESULTS = 200;
@@ -187,6 +211,83 @@ __COOKIE_BANNER__
         </a>`;
   }
 
+  let map = null;
+  let markersLayer = null;
+  let userMarker = null;
+
+  function ensureMap() {
+    if (map) return map;
+    map = L.map("map", { attributionControl: true, scrollWheelZoom: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    markersLayer = L.layerGroup().addTo(map);
+    map.setView([39.6, -0.4], 9);
+    return map;
+  }
+
+  function stationIcon(s) {
+    return L.divIcon({
+      className: "station-pin",
+      html: `<div class="station-pin-inner" style="background:${s.color}">${s.initials}</div>`,
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
+      popupAnchor: [0, -13]
+    });
+  }
+
+  function popupHtml(s) {
+    return `
+      <div class="map-popup">
+        <div class="name">${s.name}</div>
+        <div class="addr">${s.addr}${s.municipio ? " · " + s.municipio : ""}</div>
+        <div class="prices"><span>Diésel <b>${fmt(s.diesel)}</b></span><span>G. 95 <b>${fmt(s.g95)}</b></span></div>
+        <a class="go" href="${mapsUrl(s)}" target="_blank" rel="noopener">Cómo llegar →</a>
+      </div>`;
+  }
+
+  function updateMap(items, pos) {
+    const mapEl = document.getElementById("map");
+    const withCoords = items.filter(s => s.lat && s.lng);
+
+    if (!withCoords.length && !pos) {
+      mapEl.classList.add("hidden");
+      return;
+    }
+
+    mapEl.classList.remove("hidden");
+    ensureMap();
+    map.invalidateSize();
+    markersLayer.clearLayers();
+
+    const bounds = [];
+    withCoords.forEach(s => {
+      L.marker([s.lat, s.lng], { icon: stationIcon(s) })
+        .bindPopup(popupHtml(s))
+        .addTo(markersLayer);
+      bounds.push([s.lat, s.lng]);
+    });
+
+    if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+    if (pos) {
+      const userIcon = L.divIcon({
+        className: "station-pin",
+        html: '<div class="user-pin"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+      });
+      userMarker = L.marker([pos.lat, pos.lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
+      bounds.push([pos.lat, pos.lng]);
+    }
+
+    if (bounds.length === 1) {
+      map.setView(bounds[0], 15);
+    } else if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 15 });
+    }
+  }
+
   function renderList(items, { withDistance } = {}) {
     const list = document.getElementById("station-list");
     const dieselVals = items.map(s => s.diesel).filter(v => v !== null);
@@ -216,6 +317,7 @@ __COOKIE_BANNER__
       list.innerHTML = "";
       count.textContent = "";
       if (directorio) directorio.classList.remove("hidden");
+      updateMap([], null);
       return;
     }
 
@@ -226,6 +328,7 @@ __COOKIE_BANNER__
     if (!filtered.length) {
       list.innerHTML = '<div class="empty">No se han encontrado gasolineras para esa búsqueda.</div>';
       count.textContent = "";
+      updateMap([], userPos);
       return;
     }
 
@@ -246,6 +349,7 @@ __COOKIE_BANNER__
       });
     }
     renderList(shown, { withDistance: true });
+    updateMap(shown, userPos);
   }
 
   function renderNearby(pos) {
@@ -269,12 +373,14 @@ __COOKIE_BANNER__
       list.innerHTML = '<div class="empty">No se han encontrado gasolineras a menos de ' + NEARBY_KM + ' km.</div>';
       count.textContent = "";
       status.textContent = "";
+      updateMap([], pos);
       return;
     }
 
     count.textContent = `${nearby.length} gasolinera${nearby.length === 1 ? "" : "s"} a menos de ${NEARBY_KM} km, ordenadas por distancia`;
     status.textContent = "";
     renderList(nearby, { withDistance: true });
+    updateMap(nearby, pos);
   }
 
   const input = document.getElementById("search");
