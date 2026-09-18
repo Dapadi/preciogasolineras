@@ -22,9 +22,9 @@ __THEME_STYLES__
     background: var(--card); border: 1px solid var(--line); border-radius: 12px;
     padding: 13px 14px; outline: none;
   }
-  .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+  .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb),.18); }
   .search-box button {
-    font-family: inherit; font-size: 14px; font-weight: 600; color: var(--navy);
+    font-family: inherit; font-size: 14px; font-weight: 600; color: var(--on-accent);
     background: var(--accent); border: none; border-radius: 12px; padding: 0 20px; cursor: pointer;
   }
   .search-box button:hover { background: var(--accent-soft); }

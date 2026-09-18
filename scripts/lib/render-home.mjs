@@ -1,6 +1,7 @@
 // Genera docs/index.html: buscador (JS) + directorio estático de
 // poblaciones agrupadas por provincia.
 
+import { BRAND_PALETTE } from "../config.mjs";
 import { escapeHtml } from "./format.mjs";
 import { fill } from "./template.mjs";
 import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
@@ -36,7 +37,7 @@ export function renderHome(template, { stations, updatedAt, provinciasOrdenadas,
   return fill(template, {
     STATIONS_JSON: clientStationsJson(stations),
     FONTS_TAG,
-    THEME_STYLES: renderThemeStyles(),
+    THEME_STYLES: renderThemeStyles(BRAND_PALETTE),
     PUMP_ICON,
     LOCATE_ICON,
     TOTAL_STATIONS: stats.gasolineras.toLocaleString("es-ES"),

@@ -98,6 +98,17 @@ el contenido es claro y respeta el modo oscuro del sistema. Cada página añade
 en su propio `<style>` solo lo que es suyo (la gráfica, los vecinos, el
 buscador...).
 
+El color de marca se cambia en un sitio: `BRAND_PALETTE` en
+`scripts/config.mjs`. Las paletas disponibles están en `theme.mjs`
+(`petroleo`, `violeta`, `frambuesa`) y cada una define el fondo oscuro, el
+acento, su versión suave, el color del texto que va encima del acento y el
+acento en RGB, que es lo que permite derivar las transparencias (la píldora
+de "actualizado", el halo del botón, el foco del buscador) sin repetir el
+color a mano en cada regla.
+
+Los verdes y rojos de "más barata" / "más cara" no forman parte de la
+paleta y no cambian al cambiarla: son significado, no marca.
+
 En la home, `scripts/lib/stats.mjs` calcula en el build las cifras de la
 cabecera y dos secciones más, sin ninguna fuente de datos nueva: el precio
 medio por provincia (en verde la más barata, en rojo la más cara) y la media

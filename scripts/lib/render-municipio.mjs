@@ -1,6 +1,6 @@
 // Genera la página estática de una población: docs/gasolineras/{provincia}/{municipio}/index.html
 
-import { SITE_URL, SITE_NAME, FUELS, DEFAULT_FUELS } from "../config.mjs";
+import { SITE_URL, SITE_NAME, FUELS, DEFAULT_FUELS, BRAND_PALETTE } from "../config.mjs";
 import { escapeHtml, fmtPrice, mapsUrl } from "./format.mjs";
 import { fill } from "./template.mjs";
 import { renderAnalyticsScript, renderLegalFooterLinks, renderCookieBanner } from "./legal.mjs";
@@ -153,7 +153,7 @@ export function renderMunicipioPage(
     FILTER_BAR: renderFilterBar(brandsPresent(stationsSorted), { hidden: true }),
     FUEL_CATALOG_SCRIPT: renderFuelCatalogScript(),
     FONTS_TAG,
-    THEME_STYLES: renderThemeStyles(),
+    THEME_STYLES: renderThemeStyles(BRAND_PALETTE),
     PUMP_ICON,
     TOTAL_STATIONS: stationsSorted.length,
     MIN_DIESEL: fmtPrice(minDiesel),
