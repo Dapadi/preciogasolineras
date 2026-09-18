@@ -2,11 +2,21 @@ name: Actualizar precios de gasolina
 
 on:
   schedule:
-    - cron: "0 * * * *"   # cada hora, en punto (hora UTC)
+    # Cada 10 minutos. Ojo: GitHub trata los "schedule" como best-effort y los
+    # retrasa o se los salta cuando hay carga, así que esto es el intento, no
+    # la garantía: en la práctica salen huecos bastante mayores. Para que sea
+    # de verdad puntual hace falta un cron externo que llame a workflow_dispatch.
+    - cron: "*/10 * * * *"
   workflow_dispatch: {}    # permite lanzarlo a mano desde la pestaña Actions
 
 permissions:
   contents: write
+
+# Dos ejecuciones a la vez se pisarían al hacer push. Con esto la nueva espera
+# a que termine la anterior en vez de fallar.
+concurrency:
+  group: actualizar-precios
+  cancel-in-progress: false
 
 jobs:
   actualizar:
@@ -27,10 +37,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A docs/ data/history/
+          git add -A docs/ data/
           if git diff --cached --quiet; then
             echo "Sin cambios en los precios, no hago commit."
           else
             git commit -m "Actualiza precios $(date -u +'%Y-%m-%d %H:%M UTC')"
+            # Otra ejecución puede haber publicado mientras tanto.
+            git pull --rebase --autostash origin main
             git push
           fi
