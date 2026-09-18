@@ -12,6 +12,14 @@ export const PROVINCIAS = ["03", "12", "46"];
 export const API_URL =
   "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/";
 
+// Paleta de marca del sitio: el color del fondo oscuro (cabecera y héroe) y
+// el color de acento. Las opciones están en scripts/lib/theme.mjs; cambiar
+// este nombre cambia el color de todo el sitio.
+//
+// Los verdes y rojos de "barata" / "cara" no forman parte de la paleta: son
+// significado, no marca, así que no cambian.
+export const BRAND_PALETTE = "petroleo";
+
 // Carburantes que se leen de la API y por los que se puede filtrar.
 // `apiField` es el nombre exacto del campo en la respuesta del Ministerio;
 // si alguno dejara de existir o cambiara de nombre, build.mjs avisa por
