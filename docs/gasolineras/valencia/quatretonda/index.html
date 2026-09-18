@@ -10,6 +10,29 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","name":"Gasolineras en Quatretonda","itemListElement":[{"@type":"ListItem","position":1,"item":{"@type":"GasStation","name":"REPSOL","address":{"@type":"PostalAddress","streetAddress":"CARRETERA C-322 AYORA-C-320 KM. 81,2","addressLocality":"Quatretonda","postalCode":"46837","addressRegion":"Valencia","addressCountry":"ES"},"geo":{"@type":"GeoCoordinates","latitude":38.947778,"longitude":-0.404528}}}]}</script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+  #map { height: 230px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); }
+  #map.hidden { display: none; }
+  @media (prefers-color-scheme: dark) {
+    #map .leaflet-tile { filter: grayscale(0.35) invert(92%) hue-rotate(180deg) brightness(0.95) contrast(90%); }
+    #map .leaflet-control-zoom a { background: var(--card); color: var(--ink); border-color: var(--line) !important; }
+    #map .leaflet-control-attribution { background: rgba(30,32,34,.75); color: var(--ink-faint); }
+    #map .leaflet-control-attribution a { color: var(--ink-dim); }
+  }
+  .station-pin { background: transparent; border: none; }
+  .station-pin-inner {
+    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 10.5px; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35);
+  }
+  .user-pin { background: #2f7dd6; width: 14px; height: 14px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 2px #2f7dd6, 0 1px 5px rgba(0,0,0,.4); }
+  .map-popup { font-family: 'Barlow', system-ui, sans-serif; min-width: 160px; }
+  .map-popup .name { font-weight: 600; font-size: 13.5px; margin-bottom: 2px; }
+  .map-popup .addr { font-size: 11.5px; color: #6f6e66; margin-bottom: 6px; }
+  .map-popup .prices { display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 12.5px; font-variant-numeric: tabular-nums; margin-bottom: 6px; }
+  .map-popup .prices b { font-weight: 700; }
+  .map-popup a.go { font-size: 12px; font-weight: 600; color: var(--go); text-decoration: none; }
+</style>
 
 <style>
   :root {
@@ -72,6 +95,27 @@
   .trend-down { color: var(--go); }
   .pin { color: var(--ink-faint); display: flex; justify-content: center; }
   .pin svg { width: 16px; height: 16px; }
+  .filters { display: flex; gap: 8px; margin-top: 10px; }
+  .filters select {
+    flex: 1; min-width: 0; font-family: inherit; font-size: 13.5px; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 9px 10px; cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239c9b92' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 8px center; background-size: 16px;
+    padding-right: 30px; text-overflow: ellipsis;
+  }
+  .filters select:focus { border-color: var(--ink-faint); outline: none; }
+  .filters select.on { border-color: var(--go); color: var(--go); font-weight: 600; }
+  .filters.hidden { display: none; }
+  /* Con un carburante concreto elegido, la tabla pasa de dos columnas de
+     precio (diésel + G95) a una sola con la del carburante elegido. */
+  body.single-fuel .col-labels,
+  body.single-fuel a.row { grid-template-columns: 1fr 62px 20px; }
+  body.single-fuel .col-labels .col-p2,
+  body.single-fuel a.row .price.col-p2 { display: none; }
+  .map-section { margin-top: 28px; }
+  .map-section h2 { font-size: 14px; margin: 0 0 10px; }
+  .map-section.hidden { display: none; }
   .price-chart { margin-top: 28px; }
   .price-chart h2 { font-size: 14px; margin: 0 0 10px; }
   .price-chart svg { display: block; }
@@ -99,7 +143,7 @@
   <header>
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · Quatretonda</div>
     <h1>Gasolinera más barata en Quatretonda hoy</h1>
-    <div class="sub">Actualizado 18/09/2026 11:30:04 · precios en €/l · Valencia</div>
+    <div class="sub">Actualizado 18/09/2026 12:32:36 · precios en €/l · Valencia</div>
     <div class="search-box">
       <form action="../../../" method="get" id="search-form">
         <input type="text" name="q" placeholder="Busca otro CP, población o gasolinera..." autocomplete="off">
@@ -107,14 +151,30 @@
       </form>
     </div>
     <div class="search-hint">Escribe y pulsa "Buscar" para ver los resultados en el buscador general.</div>
+    <div class="filters hidden" id="filters">
+      <select id="filter-brand" aria-label="Filtrar por marca">
+        <option value="">Todas las marcas</option>
+        <option value="Repsol">Repsol (1)</option>
+      </select>
+      <select id="filter-fuel" aria-label="Filtrar por carburante">
+        <option value="">Todos los carburantes</option>
+        <option value="diesel">Diésel</option>
+        <option value="dieselpremium">Diésel Premium</option>
+        <option value="g95">Gasolina 95</option>
+        <option value="g98">Gasolina 98</option>
+        <option value="glp">GLP (autogás)</option>
+        <option value="gnc">Gas natural (GNC)</option>
+      </select>
+    </div>
+    <div class="search-hint" id="filter-count"></div>
   </header>
 
   <div class="col-labels">
-    <span>Gasolinera</span><span>Diésel</span><span>G. 95</span><span></span>
+    <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
   </div>
 
   <ul class="stations">
-    <li class="station">
+    <li class="station" data-brand="Repsol" data-p-diesel="1.949" data-p-dieselpremium="2.009" data-p-g95="2.005">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.947778,-0.404528" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -124,13 +184,18 @@
           </div>
         </div>
         <div class="price best">1,949</div>
-        <div class="price best">2,005</div>
+        <div class="price col-p2 best">2,005</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </a>
     </li>
   </ul>
+
+  <section class="map-section hidden" id="map-section">
+    <h2>Mapa de gasolineras en Quatretonda</h2>
+    <div id="map"></div>
+  </section>
 
 <div class="price-chart">
     <h2>Precio medio en Quatretonda (últimos 30 días)</h2>
@@ -180,5 +245,238 @@
       } catch (e) {}
     })();
   </script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(function () {
+  var map = null, markersLayer = null, userMarker = null;
+  var FUEL_LABELS = {"diesel":"Diésel","dieselpremium":"Dsl. Prem.","g95":"G. 95","g98":"G. 98","glp":"GLP","gnc":"GNC"};
+
+  function fmt(n) { return n === null || n === undefined ? "\u2014" : n.toFixed(3).replace(".", ","); }
+
+  // Los nombres y direcciones vienen de la API del Ministerio y se insertan
+  // como HTML en el popup: los escapamos por si alguno trae "<" o comillas.
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function mapsUrl(s) {
+    if (s.lat && s.lng) {
+      return "https://www.google.com/maps/search/?api=1&query=" + s.lat + "," + s.lng;
+    }
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.name + ", " + s.addr);
+  }
+
+  function ensureMap() {
+    if (map) return map;
+    map = L.map("map", { scrollWheelZoom: false });
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    markersLayer = L.layerGroup().addTo(map);
+    map.setView([39.6, -0.4], 9);
+    return map;
+  }
+
+  function stationIcon(s) {
+    return L.divIcon({
+      className: "station-pin",
+      html: '<div class="station-pin-inner" style="background:' + esc(s.color) + '">' + esc(s.initials) + '</div>',
+      iconSize: [26, 26],
+      iconAnchor: [13, 13],
+      popupAnchor: [0, -13]
+    });
+  }
+
+  function popupHtml(s) {
+    var prices = s.prices || {};
+    var cells = Object.keys(FUEL_LABELS)
+      .filter(function (id) { return prices[id] !== null && prices[id] !== undefined; })
+      .map(function (id) {
+        return '<span>' + esc(FUEL_LABELS[id]) + ' <b>' + fmt(prices[id]) + '</b></span>';
+      })
+      .join("");
+
+    return '<div class="map-popup">' +
+      '<div class="name">' + esc(s.name) + '</div>' +
+      '<div class="addr">' + esc(s.addr) + (s.municipio ? " \u00b7 " + esc(s.municipio) : "") + '</div>' +
+      '<div class="prices">' + cells + '</div>' +
+      '<a class="go" href="' + esc(mapsUrl(s)) + '" target="_blank" rel="noopener">C\u00f3mo llegar \u2192</a>' +
+      '</div>';
+  }
+
+  function render(items, pos) {
+    var mapEl = document.getElementById("map");
+    if (!mapEl) return;
+
+    var withCoords = (items || []).filter(function (s) { return s.lat && s.lng; });
+
+    // Sin puntos que pintar, o Leaflet no ha cargado (CDN caído, sin red):
+    // el mapa simplemente no se muestra y el resto de la página sigue igual.
+    if ((!withCoords.length && !pos) || typeof L === "undefined") {
+      mapEl.classList.add("hidden");
+      return;
+    }
+
+    mapEl.classList.remove("hidden");
+    ensureMap();
+    map.invalidateSize();
+    markersLayer.clearLayers();
+
+    var bounds = [];
+    withCoords.forEach(function (s) {
+      L.marker([s.lat, s.lng], { icon: stationIcon(s) }).bindPopup(popupHtml(s)).addTo(markersLayer);
+      bounds.push([s.lat, s.lng]);
+    });
+
+    if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+    if (pos) {
+      var userIcon = L.divIcon({
+        className: "station-pin",
+        html: '<div class="user-pin"></div>',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+      });
+      userMarker = L.marker([pos.lat, pos.lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
+      bounds.push([pos.lat, pos.lng]);
+    }
+
+    if (bounds.length === 1) {
+      map.setView(bounds[0], 15);
+    } else if (bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [24, 24], maxZoom: 15 });
+    }
+  }
+
+  window.FuelMap = { render: render };
+})();
+</script>
+<script>
+  // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
+  // cargado, la sección se queda oculta y la página funciona igual (la tabla
+  // de precios ya viene renderizada en el HTML).
+  (function () {
+    var items = [{"name":"REPSOL","addr":"CARRETERA C-322 AYORA-C-320 KM. 81,2","cp":"46837","municipio":"Quatretonda","brand":"Repsol","lat":38.947778,"lng":-0.404528,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.949,"dieselpremium":2.009,"g95":2.005}}];
+    if (!items.length || typeof L === "undefined") return;
+    document.getElementById("map-section").classList.remove("hidden");
+    FuelMap.render(items, null);
+  })();
+</script>
+<script>
+  var FUEL_LABELS = {"diesel":"Diésel","dieselpremium":"Dsl. Prem.","g95":"G. 95","g98":"G. 98","glp":"GLP","gnc":"GNC"};
+  var DEFAULT_FUELS = ["diesel","g95"];
+</script>
+<script>
+  // Filtros de marca y carburante, también como mejora progresiva: operan
+  // sobre las filas que ya vienen en el HTML (cada una lleva su marca y el
+  // precio y la tendencia de cada carburante en atributos data-*), así que
+  // sin JavaScript la página se ve completa y sin barra de filtros.
+  (function () {
+    var rows = [].slice.call(document.querySelectorAll("li.station"));
+    var brandSelect = document.getElementById("filter-brand");
+    var fuelSelect = document.getElementById("filter-fuel");
+    var countEl = document.getElementById("filter-count");
+    var list = document.querySelector("ul.stations");
+    if (!rows.length || !brandSelect || !fuelSelect) return;
+
+    document.getElementById("filters").classList.remove("hidden");
+
+    function priceOf(row, fuelId) {
+      var raw = row.getAttribute("data-p-" + fuelId);
+      return raw === null ? null : parseFloat(raw);
+    }
+
+    function trendOf(row, fuelId) {
+      var raw = row.getAttribute("data-t-" + fuelId);
+      return raw === null ? null : parseFloat(raw);
+    }
+
+    function fmt(n) { return n === null ? "—" : n.toFixed(3).replace(".", ","); }
+
+    function trendHtml(diff) {
+      if (diff === null || Math.abs(diff) < 0.001) return "";
+      var up = diff > 0;
+      return '<div class="trend ' + (up ? "trend-up" : "trend-down") + '">' +
+        (up ? "▲ +" : "▼ −") + fmt(Math.abs(diff)) + "</div>";
+    }
+
+    function apply() {
+      var brand = brandSelect.value;
+      var fuel = fuelSelect.value;
+      var fuels = fuel ? [fuel] : DEFAULT_FUELS;
+
+      brandSelect.classList.toggle("on", Boolean(brand));
+      fuelSelect.classList.toggle("on", Boolean(fuel));
+      document.body.classList.toggle("single-fuel", fuels.length === 1);
+      document.getElementById("lab-p1").textContent = FUEL_LABELS[fuels[0]];
+      if (fuels[1]) document.getElementById("lab-p2").textContent = FUEL_LABELS[fuels[1]];
+
+      var visible = rows.filter(function (row) {
+        if (brand && row.getAttribute("data-brand") !== brand) return false;
+        if (fuel && priceOf(row, fuel) === null) return false;
+        return true;
+      });
+
+      // "MÁS BARATA" se recalcula sobre lo que queda visible.
+      var mins = fuels.map(function (id) {
+        var values = visible.map(function (r) { return priceOf(r, id); })
+          .filter(function (v) { return v !== null; });
+        return values.length ? Math.min.apply(null, values) : null;
+      });
+
+      rows.forEach(function (row) {
+        row.style.display = visible.indexOf(row) === -1 ? "none" : "";
+      });
+
+      visible.forEach(function (row) {
+        var cells = row.querySelectorAll(".price");
+        fuels.forEach(function (id, i) {
+          var cell = cells[i];
+          if (!cell) return;
+          var price = priceOf(row, id);
+          var best = price !== null && price === mins[i];
+          cell.className = "price" + (i === 1 ? " col-p2" : "") + (best ? " best" : "") + (price === null ? " na" : "");
+          cell.innerHTML = fmt(price) + trendHtml(trendOf(row, id));
+        });
+        var tag = row.querySelector(".best-tag");
+        var isBest = fuels.some(function (id, i) {
+          var price = priceOf(row, id);
+          return price !== null && price === mins[i];
+        });
+        if (tag && !isBest) tag.remove();
+        if (!tag && isBest) {
+          var span = document.createElement("span");
+          span.className = "best-tag";
+          span.textContent = "MÁS BARATA";
+          row.querySelector(".name").appendChild(span);
+        }
+      });
+
+      // Reordena por el precio que se está mostrando.
+      visible
+        .slice()
+        .sort(function (a, b) {
+          var score = function (row) {
+            return fuels.reduce(function (acc, id) {
+              var price = priceOf(row, id);
+              return acc + (price === null ? 99 : price);
+            }, 0);
+          };
+          return score(a) - score(b);
+        })
+        .forEach(function (row) { list.appendChild(row); });
+
+      countEl.textContent = (brand || fuel)
+        ? visible.length + (visible.length === 1 ? " gasolinera" : " gasolineras") + " de " + rows.length
+        : "";
+    }
+
+    brandSelect.addEventListener("change", apply);
+    fuelSelect.addEventListener("change", apply);
+  })();
+</script>
 </body>
 </html>
