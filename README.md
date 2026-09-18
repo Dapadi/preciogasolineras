@@ -85,6 +85,26 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
      páginas de población la barra de filtros solo aparece si hay
      JavaScript: sin él la tabla se ve completa, como antes.
 
+## Diseño
+
+Todo el aspecto visual vive en `scripts/lib/theme.mjs` y lo comparten las dos
+plantillas, para que la home y las páginas de población no se separen cuando
+se toca una de las dos: tokens de color, tipografía (Barlow, con Barlow
+Condensed en los titulares) y los estilos base de cabecera, héroe, tarjetas,
+tabla de precios y pie.
+
+La cabecera y el héroe son siempre oscuros, porque son el elemento de marca;
+el contenido es claro y respeta el modo oscuro del sistema. Cada página añade
+en su propio `<style>` solo lo que es suyo (la gráfica, los vecinos, el
+buscador...).
+
+En la home, `scripts/lib/stats.mjs` calcula en el build las cifras de la
+cabecera y dos secciones más, sin ninguna fuente de datos nueva: el precio
+medio por provincia (en verde la más barata, en rojo la más cara) y la media
+por marca en chips (en verde las que están más de 3 céntimos por debajo de la
+media general). En las páginas de población, las cifras del héroe son el
+diésel y la gasolina 95 más baratos de esa población.
+
 ## Carburantes
 
 `FUELS` en `scripts/config.mjs` define los carburantes que se descargan y por
@@ -151,6 +171,8 @@ scripts/
     map.mjs                          # mapa interactivo (Leaflet) compartido por home y poblaciones
     filters.mjs                       # barra de filtros de marca y carburante (compartida)
     stations-json.mjs                  # serializa gasolineras para el JS de las páginas
+    theme.mjs                           # sistema de diseño: tokens, tipografía y estilos base
+    stats.mjs                            # totales y medias por provincia y por marca
 templates/
   home.html               # plantilla de la home
   municipio.html           # plantilla de las páginas de población
