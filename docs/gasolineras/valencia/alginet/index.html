@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · Alginet</div>
-    <div class="status-pill"><i></i> Actualizado 18/09/2026 12:55:37 con datos del Ministerio</div>
+    <div class="status-pill"><i></i> Actualizado 18/09/2026 16:47:50 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Alginet hoy</h1>
     <p class="hero-sub">Las <b>4 gasolineras</b> de Alginet (Valencia) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -326,7 +326,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.757" data-p-g95="1.757">
+    <li class="station" data-brand="Otras" data-p-diesel="1.777" data-p-g95="1.777">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.271389,-0.464639" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(274, 42%, 38%)">VA</div>
@@ -335,8 +335,8 @@
             <div class="addr">CALLE CENSAL DEL, 17 · Alginet</div>
           </div>
         </div>
-        <div class="price">1,757</div>
-        <div class="price col-p2">1,757</div>
+        <div class="price">1,777</div>
+        <div class="price col-p2">1,777</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -706,7 +706,7 @@
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
   // de precios ya viene renderizada en el HTML).
   (function () {
-    var items = [{"name":"COAGRI","addr":"CALLE TRULLAS, S/N","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.261944,"lng":-0.464556,"color":"hsl(137, 42%, 38%)","initials":"CO","prices":{"diesel":1.739,"g95":1.749}},{"name":"VCC ALGINET","addr":"CALLE CENSAL DEL, 17","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.271389,"lng":-0.464639,"color":"hsl(274, 42%, 38%)","initials":"VA","prices":{"diesel":1.757,"g95":1.757}},{"name":"CRIEL","addr":"POLIGONO NORTE, 1","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.267306,"lng":-0.451583,"color":"hsl(97, 42%, 38%)","initials":"CR","prices":{"diesel":1.809,"dieselpremium":1.879,"g95":1.809}},{"name":"PETROLEOS CN-340","addr":"CALLE TRULLAS, S/N","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.261222,"lng":-0.460972,"color":"hsl(172, 42%, 38%)","initials":"PC","prices":{"diesel":1.879,"g95":1.869,"g98":1.989,"glp":0.939}}];
+    var items = [{"name":"COAGRI","addr":"CALLE TRULLAS, S/N","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.261944,"lng":-0.464556,"color":"hsl(137, 42%, 38%)","initials":"CO","prices":{"diesel":1.739,"g95":1.749}},{"name":"VCC ALGINET","addr":"CALLE CENSAL DEL, 17","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.271389,"lng":-0.464639,"color":"hsl(274, 42%, 38%)","initials":"VA","prices":{"diesel":1.777,"g95":1.777}},{"name":"CRIEL","addr":"POLIGONO NORTE, 1","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.267306,"lng":-0.451583,"color":"hsl(97, 42%, 38%)","initials":"CR","prices":{"diesel":1.809,"dieselpremium":1.879,"g95":1.809}},{"name":"PETROLEOS CN-340","addr":"CALLE TRULLAS, S/N","cp":"46230","municipio":"Alginet","brand":"Otras","lat":39.261222,"lng":-0.460972,"color":"hsl(172, 42%, 38%)","initials":"PC","prices":{"diesel":1.879,"g95":1.869,"g98":1.989,"glp":0.939}}];
     if (!items.length || typeof L === "undefined") return;
     document.getElementById("map-section").classList.remove("hidden");
     FuelMap.render(items, null);
