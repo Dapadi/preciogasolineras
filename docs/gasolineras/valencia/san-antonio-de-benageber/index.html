@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · San Antonio de Benagéber</div>
-    <div class="status-pill"><i></i> Actualizado 18/09/2026 22:27:18 con datos del Ministerio</div>
+    <div class="status-pill"><i></i> Actualizado 19/09/2026 0:45:41 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en San Antonio de Benagéber hoy</h1>
     <p class="hero-sub">Las <b>4 gasolineras</b> de San Antonio de Benagéber (Valencia) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -328,17 +328,17 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.755" data-p-g95="1.739">
+    <li class="station" data-brand="Otras" data-p-diesel="1.775" data-p-g95="1.759">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.552556,-0.487111" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(260, 42%, 38%)">PL</div>
           <div class="name-block">
-            <div class="name">PLENERGY<span class="best-tag">MÁS BARATA</span></div>
+            <div class="name">PLENERGY</div>
             <div class="addr">CALLE PAPUT, 51 · San Antonio de Benagéber</div>
           </div>
         </div>
-        <div class="price best">1,755</div>
-        <div class="price col-p2">1,739</div>
+        <div class="price">1,775</div>
+        <div class="price col-p2">1,759</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -390,8 +390,8 @@
 <div class="price-chart">
     <h2>Precio medio en San Antonio de Benagéber (últimos 30 días)</h2>
     <svg viewBox="0 0 320 64" width="100%" height="64" role="img" aria-label="Precio medio en San Antonio de Benagéber (últimos 30 días)">
-      <polyline points="303.4,58.0 314.0,58.0" fill="none" stroke-width="2" style="stroke:var(--line-diesel)" />
-      <polyline points="303.4,6.0 314.0,12.5" fill="none" stroke-width="2" style="stroke:var(--line-g95)" />
+      <polyline points="292.8,58.0 303.4,58.0 314.0,45.0" fill="none" stroke-width="2" style="stroke:var(--line-diesel)" />
+      <polyline points="292.8,6.0 303.4,12.5 314.0,25.5" fill="none" stroke-width="2" style="stroke:var(--line-g95)" />
     </svg>
     <div class="chart-legend">
       <span><i style="background:var(--line-diesel)"></i>Diésel</span>
@@ -708,7 +708,7 @@
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
   // de precios ya viene renderizada en el HTML).
   (function () {
-    var items = [{"name":"SAN ANTONIO OIL","addr":"POLIGONO ISAAC PERAL, 2","cp":"46184","municipio":"San Antonio de Benagéber","brand":"Otras","lat":39.551139,"lng":-0.482556,"color":"hsl(258, 42%, 38%)","initials":"SA","prices":{"diesel":1.755,"g95":1.735}},{"name":"PLENERGY","addr":"CALLE PAPUT, 51","cp":"46184","municipio":"San Antonio de Benagéber","brand":"Otras","lat":39.552556,"lng":-0.487111,"color":"hsl(260, 42%, 38%)","initials":"PL","prices":{"diesel":1.755,"g95":1.739}},{"name":"GALP","addr":"POLIGONO POLIGONO 4, SN","cp":"46184","municipio":"San Antonio de Benagéber","brand":"Galp","lat":39.555611,"lng":-0.486917,"color":"hsl(262, 42%, 38%)","initials":"GA","prices":{"diesel":1.809,"g95":1.789,"g98":1.929}},{"name":"BP  MARIOLA","addr":"CARRETERA VALENCIA ADEMUZ KM. 13,1","cp":"46184","municipio":"San Antonio de Benagéber","brand":"BP","lat":39.559972,"lng":-0.495917,"color":"hsl(253, 42%, 38%)","initials":"BM","prices":{"diesel":1.969,"dieselpremium":2.059,"g95":2.039,"g98":2.179}}];
+    var items = [{"name":"SAN ANTONIO OIL","addr":"POLIGONO ISAAC PERAL, 2","cp":"46184","municipio":"San Antonio de Benagéber","brand":"Otras","lat":39.551139,"lng":-0.482556,"color":"hsl(258, 42%, 38%)","initials":"SA","prices":{"diesel":1.755,"g95":1.735}},{"name":"PLENERGY","addr":"CALLE PAPUT, 51","cp":"46184","municipio":"San Antonio de Benagéber","brand":"Otras","lat":39.552556,"lng":-0.487111,"color":"hsl(260, 42%, 38%)","initials":"PL","prices":{"diesel":1.775,"g95":1.759}},{"name":"GALP","addr":"POLIGONO POLIGONO 4, SN","cp":"46184","municipio":"San Antonio de Benagéber","brand":"Galp","lat":39.555611,"lng":-0.486917,"color":"hsl(262, 42%, 38%)","initials":"GA","prices":{"diesel":1.809,"g95":1.789,"g98":1.929}},{"name":"BP  MARIOLA","addr":"CARRETERA VALENCIA ADEMUZ KM. 13,1","cp":"46184","municipio":"San Antonio de Benagéber","brand":"BP","lat":39.559972,"lng":-0.495917,"color":"hsl(253, 42%, 38%)","initials":"BM","prices":{"diesel":1.969,"dieselpremium":2.059,"g95":2.039,"g98":2.179}}];
     if (!items.length || typeof L === "undefined") return;
     document.getElementById("map-section").classList.remove("hidden");
     FuelMap.render(items, null);
