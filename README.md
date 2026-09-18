@@ -3,7 +3,7 @@
 Genera una web con los precios de todas las gasolineras de Alicante,
 Castellón y Valencia: una home con buscador y directorio de poblaciones, más
 una página estática por población (para que Google pueda indexarlas), y se
-actualiza sola cada hora, publicándose gratis con GitHub Pages.
+actualiza sola cada pocos minutos, publicándose gratis con GitHub Pages.
 
 ## Cómo funciona
 
@@ -20,14 +20,15 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
    - `docs/sitemap.xml` y `docs/robots.txt`.
    - `data/history/{AAAA-MM-DD}.json`: una entrada `{ ideess, diesel, g95 }`
      por gasolinera, una vez al día (la primera ejecución del día "gana"
-     esa lectura; las siguientes ejecuciones horarias no la tocan). Con eso
+     esa lectura; las siguientes ejecuciones del día no la tocan). Con eso
      cada página de población calcula la flecha de tendencia a 7 días de
      cada gasolinera (▲/▼) y la gráfica de precio medio de los últimos 30
      días. `data/history/` no se publica con GitHub Pages (vive fuera de
      `docs/`), es solo el almacén de datos del histórico.
-2. `.github/workflows/update-precios.yml` ejecuta ese script cada hora
-   (`cron: "0 * * * *"`) y, si algo ha cambiado, hace commit y push de todo
-   `docs/` y `data/history/` automáticamente.
+2. `.github/workflows/update-precios.yml` ejecuta ese script cada 10 minutos
+   (`cron: "*/10 * * * *"`) y, si algo ha cambiado, hace commit y push de todo
+   `docs/` y `data/` automáticamente. Ver "Cada cuánto se actualiza de
+   verdad" más abajo, porque GitHub no cumple ese horario.
 3. GitHub Pages sirve el contenido de `docs/` como una web pública normal.
 4. En la home, el buscador filtra en el navegador (sin llamadas de red) por
    código postal, población o nombre de gasolinera. Desde cada página de
@@ -116,6 +117,35 @@ por marca en chips (en verde las que están más de 3 céntimos por debajo de la
 media general). En las páginas de población, las cifras del héroe son el
 diésel y la gasolina 95 más baratos de esa población.
 
+## Cada cuánto se actualiza de verdad
+
+El cron dice cada 10 minutos, pero **GitHub no lo cumple**. Los eventos
+`schedule` son best-effort: se retrasan y se saltan cuando hay carga, y en
+repos públicos van con baja prioridad. Midiendo los huecos reales entre
+ejecuciones programadas con el cron anterior (que pedía cada hora), salía una
+media de 265 minutos, con picos de 5,5 horas. Bajar el cron ayuda porque hay
+más intentos, pero no lo convierte en puntual.
+
+Para que sea de verdad puntual hay que llamar a `workflow_dispatch` desde
+fuera, que no sufre esos retrasos: un cron externo (cron-job.org, un VPS, una
+función programada) haciendo un `POST` a
+`/repos/Dapadi/preciogasolineras/actions/workflows/update-precios.yml/dispatches`
+con un token con permiso `actions:write`.
+
+Para que subir la frecuencia no llene el repositorio de commits, `build.mjs`
+guarda en `data/state.json` una huella de todos los precios junto con la
+fecha en la que cambiaron por última vez. Si la consulta trae exactamente los
+mismos precios, se reutiliza esa fecha y las páginas salen byte a byte
+iguales, así que el workflow no hace commit. Esto importa porque la API
+devuelve en su campo `Fecha` la hora de la consulta, no la del último cambio:
+sin esta comprobación, cada ejecución reescribiría las ~290 páginas y
+commitearía aunque no se hubiera movido un solo precio.
+
+El efecto secundario es que la fecha que se ve en la web significa "cuándo
+cambiaron los precios por última vez", que es más útil que "cuándo miramos".
+Un cambio de plantilla o de diseño sí se publica igual, porque el HTML
+generado difiere aunque los precios sean los mismos.
+
 ## Carburantes
 
 `FUELS` en `scripts/config.mjs` define los carburantes que se descargan y por
@@ -149,7 +179,7 @@ simplemente no tienen flecha de tendencia hasta que pasen suficientes días.
 4. Al cabo de unos minutos, tu página estará en
    `https://<tu-usuario>.github.io/<nombre-del-repo>/`.
 
-A partir de ahí, GitHub Actions se encarga solo: cada hora vuelve a
+A partir de ahí, GitHub Actions se encarga solo: cada pocos minutos vuelve a
 consultar el Ministerio y, si algún precio ha cambiado, actualiza la página.
 No hace falta que hagas nada más ni que mantengas nada encendido — corre en
 los servidores de GitHub, gratis dentro del uso normal de un repo personal.
@@ -247,7 +277,7 @@ open docs/index.html
 ## Notas
 
 - La API del Ministerio se actualiza por su parte cada 30 minutos
-  aproximadamente, así que consultarla cada hora es más que suficiente.
+  aproximadamente, así que consultarla cada 10 minutos la coge en cuanto cambia.
 - Si un día la API no responde, el workflow simplemente falla ese ciclo y
   lo reintenta en la siguiente hora; la página se queda con los últimos
   datos válidos.
