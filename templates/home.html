@@ -28,14 +28,27 @@ __PLAUSIBLE_SCRIPT__
   header { margin-bottom: 18px; }
   h1 { font-weight: 700; font-size: 24px; margin: 0 0 4px; }
   .sub { font-size: 13.5px; color: var(--ink-faint); }
-  .search-box { margin-top: 18px; position: relative; }
+  .search-box { margin-top: 18px; position: relative; display: flex; gap: 8px; }
   .search-box input {
-    width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+    flex: 1; min-width: 0; font-family: inherit; font-size: 15px; color: var(--ink);
     background: var(--card); border: 1px solid var(--line); border-radius: 10px;
     padding: 12px 14px; outline: none;
   }
   .search-box input:focus { border-color: var(--ink-faint); }
+  .geo-btn {
+    flex-shrink: 0; width: 46px; display: flex; align-items: center; justify-content: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    color: var(--ink-dim); cursor: pointer; padding: 0;
+  }
+  .geo-btn svg { width: 20px; height: 20px; }
+  .geo-btn:hover { color: var(--ink); border-color: var(--ink-faint); }
+  .geo-btn.active { color: #fff; background: var(--go); border-color: var(--go); }
+  .geo-btn.loading svg { animation: geo-spin 1s linear infinite; }
+  @keyframes geo-spin { to { transform: rotate(360deg); } }
   .search-count { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
+  .geo-status { font-size: 12px; color: var(--ink-faint); margin-top: 8px; }
+  .geo-status.error { color: #c24444; }
+  .dist { font-size: 12px; color: var(--ink-dim); white-space: nowrap; }
   .col-labels { display: grid; grid-template-columns: 1fr 62px 62px 20px; gap: 10px; padding: 0 4px 8px; font-size: 11.5px; color: var(--ink-faint); border-bottom: 1px solid var(--line); margin-top: 14px; }
   .col-labels span:nth-child(2), .col-labels span:nth-child(3) { text-align: right; }
   ul.stations { list-style: none; margin: 0; padding: 0; }
@@ -78,8 +91,12 @@ __PLAUSIBLE_SCRIPT__
     <div class="sub">Actualizado __UPDATED_AT__ · precios en €/l · Alicante, Castellón y Valencia</div>
     <div class="search-box">
       <input type="text" id="search" placeholder="Busca por código postal, población o gasolinera..." autocomplete="off">
+      <button type="button" id="geo-btn" class="geo-btn" title="Ver gasolineras cerca de mí">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      </button>
     </div>
     <div class="search-count" id="search-count"></div>
+    <div class="geo-status" id="geo-status"></div>
   </header>
 
   <div class="col-labels">
@@ -105,8 +122,25 @@ __COOKIE_BANNER__
 <script>
   const stations = __STATIONS_JSON__;
   const MAX_RESULTS = 200;
+  const NEARBY_KM = 15;
+  let userPos = null;
 
   function fmt(n) { return n === null ? "—" : n.toFixed(3).replace(".", ","); }
+
+  function fmtDist(km) {
+    return km < 1 ? Math.round(km * 1000) + " m" : km.toFixed(1).replace(".", ",") + " km";
+  }
+
+  // Distancia entre dos puntos (fórmula de Haversine), en km.
+  function distanceKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
 
   function normalize(str) {
     return String(str)
@@ -135,6 +169,44 @@ __COOKIE_BANNER__
     );
   }
 
+  function stationRowHtml(s, { isDieselBest, isG95Best, distanceLabel }) {
+    return `
+        <a class="row" href="${mapsUrl(s)}" target="_blank" rel="noopener">
+          <div class="id-cell">
+            <div class="mono" style="background:${s.color}">${s.initials}</div>
+            <div class="name-block">
+              <div class="name">${s.name}${isDieselBest || isG95Best ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
+              <div class="addr">${distanceLabel ? '<span class="dist">' + distanceLabel + '</span> · ' : ""}${s.addr}${s.municipio ? " · " + s.municipio : ""}</div>
+            </div>
+          </div>
+          <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmt(s.diesel)}</div>
+          <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmt(s.g95)}</div>
+          <div class="pin">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </div>
+        </a>`;
+  }
+
+  function renderList(items, { withDistance } = {}) {
+    const list = document.getElementById("station-list");
+    const dieselVals = items.map(s => s.diesel).filter(v => v !== null);
+    const g95Vals = items.map(s => s.g95).filter(v => v !== null);
+    const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
+    const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
+
+    list.innerHTML = "";
+    items.forEach(s => {
+      const li = document.createElement("li");
+      li.className = "station";
+      li.innerHTML = stationRowHtml(s, {
+        isDieselBest: s.diesel !== null && s.diesel === minDiesel,
+        isG95Best: s.g95 !== null && s.g95 === minG95,
+        distanceLabel: withDistance && s._distanceKm !== undefined ? fmtDist(s._distanceKm) : null
+      });
+      list.appendChild(li);
+    });
+  }
+
   function render(query) {
     const list = document.getElementById("station-list");
     const count = document.getElementById("search-count");
@@ -157,11 +229,6 @@ __COOKIE_BANNER__
       return;
     }
 
-    const dieselVals = filtered.map(s => s.diesel).filter(v => v !== null);
-    const g95Vals = filtered.map(s => s.g95).filter(v => v !== null);
-    const minDiesel = dieselVals.length ? Math.min(...dieselVals) : null;
-    const minG95 = g95Vals.length ? Math.min(...g95Vals) : null;
-
     const sorted = [...filtered].sort((a, b) => {
       const av = (a.diesel ?? 99) + (a.g95 ?? 99);
       const bv = (b.diesel ?? 99) + (b.g95 ?? 99);
@@ -173,33 +240,77 @@ __COOKIE_BANNER__
       ? `Mostrando ${shown.length} de ${filtered.length} resultados`
       : `${filtered.length} resultado${filtered.length === 1 ? "" : "s"}`;
 
-    list.innerHTML = "";
-    shown.forEach(s => {
-      const li = document.createElement("li");
-      li.className = "station";
-      const isDieselBest = s.diesel !== null && s.diesel === minDiesel;
-      const isG95Best = s.g95 !== null && s.g95 === minG95;
-      li.innerHTML = `
-        <a class="row" href="${mapsUrl(s)}" target="_blank" rel="noopener">
-          <div class="id-cell">
-            <div class="mono" style="background:${s.color}">${s.initials}</div>
-            <div class="name-block">
-              <div class="name">${s.name}${isDieselBest || isG95Best ? '<span class="best-tag">MÁS BARATA</span>' : ""}</div>
-              <div class="addr">${s.addr}${s.municipio ? " · " + s.municipio : ""}</div>
-            </div>
-          </div>
-          <div class="price${isDieselBest ? " best" : ""}${s.diesel === null ? " na" : ""}">${fmt(s.diesel)}</div>
-          <div class="price${isG95Best ? " best" : ""}${s.g95 === null ? " na" : ""}">${fmt(s.g95)}</div>
-          <div class="pin">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </div>
-        </a>`;
-      list.appendChild(li);
-    });
+    if (userPos) {
+      shown.forEach(s => {
+        if (s.lat && s.lng) s._distanceKm = distanceKm(userPos.lat, userPos.lng, s.lat, s.lng);
+      });
+    }
+    renderList(shown, { withDistance: true });
+  }
+
+  function renderNearby(pos) {
+    const list = document.getElementById("station-list");
+    const count = document.getElementById("search-count");
+    const directorio = document.getElementById("directorio");
+    const status = document.getElementById("geo-status");
+    const input = document.getElementById("search");
+
+    input.value = "";
+    if (directorio) directorio.classList.add("hidden");
+
+    const withCoords = stations.filter(s => s.lat && s.lng);
+    withCoords.forEach(s => { s._distanceKm = distanceKm(pos.lat, pos.lng, s.lat, s.lng); });
+    const nearby = withCoords
+      .filter(s => s._distanceKm <= NEARBY_KM)
+      .sort((a, b) => a._distanceKm - b._distanceKm)
+      .slice(0, 30);
+
+    if (!nearby.length) {
+      list.innerHTML = '<div class="empty">No se han encontrado gasolineras a menos de ' + NEARBY_KM + ' km.</div>';
+      count.textContent = "";
+      status.textContent = "";
+      return;
+    }
+
+    count.textContent = `${nearby.length} gasolinera${nearby.length === 1 ? "" : "s"} a menos de ${NEARBY_KM} km, ordenadas por distancia`;
+    status.textContent = "";
+    renderList(nearby, { withDistance: true });
   }
 
   const input = document.getElementById("search");
-  input.addEventListener("input", () => render(input.value));
+  input.addEventListener("input", () => {
+    document.getElementById("geo-btn").classList.remove("active");
+    render(input.value);
+  });
+
+  const geoBtn = document.getElementById("geo-btn");
+  const geoStatus = document.getElementById("geo-status");
+  geoBtn.addEventListener("click", () => {
+    if (!("geolocation" in navigator)) {
+      geoStatus.textContent = "Tu navegador no permite compartir la ubicación.";
+      geoStatus.classList.add("error");
+      return;
+    }
+    geoBtn.classList.add("loading");
+    geoStatus.classList.remove("error");
+    geoStatus.textContent = "Buscando tu ubicación...";
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userPos = { lat: position.coords.latitude, lng: position.coords.longitude };
+        geoBtn.classList.remove("loading");
+        geoBtn.classList.add("active");
+        renderNearby(userPos);
+      },
+      (err) => {
+        geoBtn.classList.remove("loading");
+        geoStatus.classList.add("error");
+        geoStatus.textContent = err.code === err.PERMISSION_DENIED
+          ? "Has bloqueado el acceso a tu ubicación. Actívalo en los ajustes del navegador para ver las gasolineras más cercanas."
+          : "No se ha podido obtener tu ubicación. Inténtalo de nuevo.";
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  });
 
   const initialQuery = new URLSearchParams(location.search).get("q") || "";
   if (initialQuery) input.value = initialQuery;

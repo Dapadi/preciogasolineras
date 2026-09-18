@@ -33,6 +33,16 @@ actualiza sola cada hora, publicándose gratis con GitHub Pages.
    código postal, población o nombre de gasolinera. Desde cada página de
    población se puede volver a la home con una búsqueda ya rellenada
    (`?q=...`).
+5. El botón de geolocalización (📍, junto al buscador) pide permiso al
+   navegador con `navigator.geolocation`, calcula la distancia a cada
+   gasolinera con la fórmula de Haversine (usando `lat`/`lng`, que ya vienen
+   de la API del Ministerio) y muestra las más cercanas en un radio de 15 km
+   ordenadas de más a menos cerca, con la distancia junto a la dirección. Si
+   el usuario ya ha compartido su ubicación, las búsquedas por texto también
+   muestran la distancia de cada resultado (el orden de la búsqueda sigue
+   siendo por precio). Si el navegador no soporta geolocalización o el
+   usuario deniega el permiso, se muestra un aviso y el resto de la página
+   sigue funcionando igual.
 
 ## Puesta en marcha (10 minutos)
 
