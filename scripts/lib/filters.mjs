@@ -17,7 +17,7 @@ export function renderFilterStyles() {
     padding: 9px 10px; cursor: pointer; appearance: none;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239c9b92' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 8px center; background-size: 16px;
-    padding-right: 28px;
+    padding-right: 30px; text-overflow: ellipsis;
   }
   .filters select:focus { border-color: var(--ink-faint); outline: none; }
   .filters select.on { border-color: var(--go); color: var(--go); font-weight: 600; }
