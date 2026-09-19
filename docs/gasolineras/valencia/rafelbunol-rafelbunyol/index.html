@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · Rafelbuñol/Rafelbunyol</div>
-    <div class="status-pill"><i></i> Actualizado 19/09/2026 7:10:33 con datos del Ministerio</div>
+    <div class="status-pill"><i></i> Actualizado 19/09/2026 11:35:16 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Rafelbuñol/Rafelbunyol hoy</h1>
     <p class="hero-sub">Las <b>4 gasolineras</b> de Rafelbuñol/Rafelbunyol (Valencia) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -361,7 +361,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Repsol" data-p-diesel="1.995" data-p-dieselpremium="2.045" data-p-g95="2.045" data-p-g98="2.205">
+    <li class="station" data-brand="Repsol" data-p-diesel="2.005" data-p-dieselpremium="2.045" data-p-g95="2.055" data-p-g98="2.205">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.587417,-0.323722" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -370,8 +370,8 @@
             <div class="addr">CAMINO CEBOLLA, 45 · Rafelbuñol/Rafelbunyol</div>
           </div>
         </div>
-        <div class="price">1,995</div>
-        <div class="price col-p2">2,045</div>
+        <div class="price">2,005</div>
+        <div class="price col-p2">2,055</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -709,7 +709,7 @@
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
   // de precios ya viene renderizada en el HTML).
   (function () {
-    var items = [{"name":"YENO","addr":"CAMINO CEBOLLA, 58","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"Otras","lat":39.586583,"lng":-0.323694,"color":"hsl(45, 42%, 38%)","initials":"YE","prices":{"diesel":1.899,"g95":1.859}},{"name":"BP RAFELBUNYOL GRUPO MAICAS","addr":"CM DE LA CEBOLLA  S/N","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"BP","lat":39.588778,"lng":-0.328778,"color":"hsl(184, 42%, 38%)","initials":"BR","prices":{"diesel":1.999,"dieselpremium":2.059,"g95":1.999,"g98":2.129}},{"name":"PETRONOR","addr":"CALLE CTRA. ANTIGUA DE BARCELONA, 4","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"Petronor","lat":39.585111,"lng":-0.324111,"color":"hsl(301, 42%, 38%)","initials":"PE","prices":{"diesel":1.989,"dieselpremium":2.039,"g95":2.035}},{"name":"REPSOL","addr":"CAMINO CEBOLLA, 45","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"Repsol","lat":39.587417,"lng":-0.323722,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.995,"dieselpremium":2.045,"g95":2.045,"g98":2.205}}];
+    var items = [{"name":"YENO","addr":"CAMINO CEBOLLA, 58","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"Otras","lat":39.586583,"lng":-0.323694,"color":"hsl(45, 42%, 38%)","initials":"YE","prices":{"diesel":1.899,"g95":1.859}},{"name":"BP RAFELBUNYOL GRUPO MAICAS","addr":"CM DE LA CEBOLLA  S/N","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"BP","lat":39.588778,"lng":-0.328778,"color":"hsl(184, 42%, 38%)","initials":"BR","prices":{"diesel":1.999,"dieselpremium":2.059,"g95":1.999,"g98":2.129}},{"name":"PETRONOR","addr":"CALLE CTRA. ANTIGUA DE BARCELONA, 4","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"Petronor","lat":39.585111,"lng":-0.324111,"color":"hsl(301, 42%, 38%)","initials":"PE","prices":{"diesel":1.989,"dieselpremium":2.039,"g95":2.035}},{"name":"REPSOL","addr":"CAMINO CEBOLLA, 45","cp":"46138","municipio":"Rafelbuñol/Rafelbunyol","brand":"Repsol","lat":39.587417,"lng":-0.323722,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":2.005,"dieselpremium":2.045,"g95":2.055,"g98":2.205}}];
     if (!items.length || typeof L === "undefined") return;
     document.getElementById("map-section").classList.remove("hidden");
     FuelMap.render(items, null);
