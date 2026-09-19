@@ -8,6 +8,7 @@ import { renderMapHead, renderMapScript, mapStationsJson } from "./map.mjs";
 import { renderFilterBar, renderFilterStyles, renderFuelCatalogScript } from "./filters.mjs";
 import { brandsPresent } from "./group.mjs";
 import { FONTS_TAG, PUMP_ICON, renderThemeStyles } from "./theme.mjs";
+import { renderLiveScript } from "./live.mjs";
 
 // diff: número (positivo = ha subido, negativo = ha bajado) o null si no
 // hay histórico de hace 7 días para comparar.
@@ -43,7 +44,7 @@ function stationRowHtml(s, mins, trends) {
     return `<div class="${cls}">${fmtPrice(price)}${trendHtml(trends ? trends.get(`${s.ideess}|${id}`) : undefined)}</div>`;
   }).join("\n        ");
 
-  return `    <li class="station" data-brand="${escapeHtml(s.brand)}"${fuelDataAttrs(s, trends)}>
+  return `    <li class="station" data-ideess="${escapeHtml(s.ideess)}" data-brand="${escapeHtml(s.brand)}"${fuelDataAttrs(s, trends)}>
       <a class="row" href="${escapeHtml(mapsUrl(s))}" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:${s.color}">${escapeHtml(s.initials)}</div>
@@ -154,6 +155,7 @@ export function renderMunicipioPage(
     FUEL_CATALOG_SCRIPT: renderFuelCatalogScript(),
     FONTS_TAG,
     THEME_STYLES: renderThemeStyles(BRAND_PALETTE),
+    LIVE_SCRIPT: renderLiveScript(),
     PUMP_ICON,
     TOTAL_STATIONS: stationsSorted.length,
     MIN_DIESEL: fmtPrice(minDiesel),

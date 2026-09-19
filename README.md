@@ -132,6 +132,25 @@ función programada) haciendo un `POST` a
 `/repos/Dapadi/preciogasolineras/actions/workflows/update-precios.yml/dispatches`
 con un token con permiso `actions:write`.
 
+### Precios en vivo desde el navegador
+
+Como el HTML publicado puede llevar horas de retraso, `scripts/lib/live.mjs`
+añade un refresco en el cliente: al abrir cualquier página se piden los
+precios de ahora mismo a la API del Ministerio y se actualizan la tabla, las
+cifras de la cabecera y los popups del mapa, sin recargar. La píldora de
+estado pasa a decir "Precios en directo del Ministerio".
+
+Es estrictamente una mejora progresiva. Si no hay JavaScript, si la API no
+permite CORS, si tarda más de 8 segundos o si falla por cualquier motivo, no
+se toca nada y se quedan los precios del build, que son los que lleva el HTML
+estático y los que ve Google.
+
+Para no castigar a la API ni el móvil del usuario, la respuesta se guarda en
+`localStorage` durante 15 minutos: quien navegue por varias páginas hace una
+sola consulta, no una por página. Todos los accesos a `localStorage` van
+envueltos en `try`/`catch`, porque en modo privado o con las cookies
+bloqueadas pueden lanzar excepción.
+
 Para que subir la frecuencia no llene el repositorio de commits, `build.mjs`
 guarda en `data/state.json` una huella de todos los precios junto con la
 fecha en la que cambiaron por última vez. Si la consulta trae exactamente los
@@ -214,6 +233,7 @@ scripts/
     stations-json.mjs                  # serializa gasolineras para el JS de las páginas
     theme.mjs                           # sistema de diseño: tokens, tipografía y estilos base
     stats.mjs                            # totales y medias por provincia y por marca
+    live.mjs                              # refresco de precios en vivo desde el navegador
 templates/
   home.html               # plantilla de la home
   municipio.html           # plantilla de las páginas de población
