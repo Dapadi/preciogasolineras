@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Castellón · Onda</div>
-    <div class="status-pill"><i></i> Actualizado 19/09/2026 11:35:16 con datos del Ministerio</div>
+    <div class="status-pill" id="status-pill"><i></i> Actualizado 19/09/2026 13:56:39 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Onda hoy</h1>
     <p class="hero-sub">Las <b>15 gasolineras</b> de Onda (Castellón) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -300,8 +300,8 @@
     <div class="search-hint" id="filter-count">Escribe y pulsa "Buscar" para ir al buscador general.</div>
 
     <div class="stats">
-      <div><b>1,739</b><span>diésel más barato</span></div>
-      <div><b>1,709</b><span>gasolina 95 más barata</span></div>
+      <div><b id="stat-diesel">1,739</b><span>diésel más barato</span></div>
+      <div><b id="stat-g95">1,709</b><span>gasolina 95 más barata</span></div>
       <div><b>15</b><span>gasolineras</span></div>
     </div>
   </div>
@@ -315,7 +315,7 @@
           <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
         </div>
         <ul class="stations">
-    <li class="station" data-brand="Ballenoil" data-p-diesel="1.739" data-p-dieselpremium="1.759" data-p-g95="1.709">
+    <li class="station" data-ideess="3508" data-brand="Ballenoil" data-p-diesel="1.739" data-p-dieselpremium="1.759" data-p-g95="1.709">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.965333,-0.260417" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(102, 42%, 38%)">BA</div>
@@ -331,7 +331,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.739" data-p-g95="1.709">
+    <li class="station" data-ideess="15816" data-brand="Otras" data-p-diesel="1.739" data-p-g95="1.709">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.967833,-0.251639" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(260, 42%, 38%)">PL</div>
@@ -347,7 +347,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="BonÀrea" data-p-diesel="1.74" data-p-g95="1.716">
+    <li class="station" data-ideess="14702" data-brand="BonÀrea" data-p-diesel="1.74" data-p-g95="1.716">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.954944,-0.202056" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(66, 42%, 38%)">BO</div>
@@ -363,7 +363,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Carrefour" data-p-diesel="1.739" data-p-dieselpremium="1.779" data-p-g95="1.759" data-p-g98="2.029">
+    <li class="station" data-ideess="1956" data-brand="Carrefour" data-p-diesel="1.739" data-p-dieselpremium="1.779" data-p-g95="1.759" data-p-g98="2.029">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.964611,-0.251056" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(99, 42%, 38%)">CA</div>
@@ -379,7 +379,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.775" data-p-g95="1.749">
+    <li class="station" data-ideess="12524" data-brand="Otras" data-p-diesel="1.775" data-p-g95="1.749">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.966111,-0.247389" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(281, 42%, 38%)">OO</div>
@@ -395,7 +395,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.819" data-p-g95="1.779">
+    <li class="station" data-ideess="12114" data-brand="Otras" data-p-diesel="1.819" data-p-g95="1.779">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.963833,-0.230583" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(240, 42%, 38%)">RR</div>
@@ -411,7 +411,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.839" data-p-g95="1.789" data-p-gnc="1.299">
+    <li class="station" data-ideess="12808" data-brand="Otras" data-p-diesel="1.839" data-p-g95="1.789" data-p-gnc="1.299">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.951278,-0.182472" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(18, 42%, 38%)">BD</div>
@@ -427,7 +427,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.838" data-p-dieselpremium="1.938" data-p-g95="1.817" data-p-g98="1.909">
+    <li class="station" data-ideess="11776" data-brand="Otras" data-p-diesel="1.838" data-p-dieselpremium="1.938" data-p-g95="1.817" data-p-g98="1.909">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.956556,-0.209667" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(74, 42%, 38%)">CA</div>
@@ -443,7 +443,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Cepsa" data-p-diesel="1.934" data-p-dieselpremium="2.009" data-p-g95="1.925">
+    <li class="station" data-ideess="10260" data-brand="Cepsa" data-p-diesel="1.934" data-p-dieselpremium="2.009" data-p-g95="1.925">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.970722,-0.243417" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(124, 42%, 38%)">CE</div>
@@ -459,7 +459,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.952" data-p-g95="1.95">
+    <li class="station" data-ideess="14051" data-brand="Otras" data-p-diesel="1.952" data-p-g95="1.95">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.981361,-0.156861" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(140, 42%, 38%)">GM</div>
@@ -475,7 +475,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="2.024" data-p-dieselpremium="2.099" data-p-g95="1.989" data-p-g98="2.069">
+    <li class="station" data-ideess="3505" data-brand="Otras" data-p-diesel="2.024" data-p-dieselpremium="2.099" data-p-g95="1.989" data-p-g98="2.069">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.96425,-0.247722" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(50, 42%, 38%)">MO</div>
@@ -491,7 +491,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Repsol" data-p-diesel="2.035" data-p-dieselpremium="2.135" data-p-g95="1.979">
+    <li class="station" data-ideess="3494" data-brand="Repsol" data-p-diesel="2.035" data-p-dieselpremium="2.135" data-p-g95="1.979">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.952167,-0.186056" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -507,7 +507,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="1.773">
+    <li class="station" data-ideess="14535" data-brand="Otras" data-p-diesel="1.773">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.987167,-0.141139" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(48, 42%, 38%)">RA</div>
@@ -523,7 +523,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-diesel="2.009">
+    <li class="station" data-ideess="15421" data-brand="Otras" data-p-diesel="2.009">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.978,-0.15825" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(38, 42%, 38%)">TT</div>
@@ -539,7 +539,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-dieselpremium="1.828">
+    <li class="station" data-ideess="15246" data-brand="Otras" data-p-dieselpremium="1.828">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.952361,-0.188528" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(89, 42%, 38%)">TT</div>
@@ -629,6 +629,7 @@
       <a href="../vall-d-alba/">Vall D&#39;alba</a>
       <a href="../vall-d-uixo-la/">Vall D&#39;uixó (la)</a>
       <a href="../vilafames/">Vilafamés</a>
+      <a href="../vilanova-d-alcolea/">Vilanova D&#39;alcolea</a>
       <a href="../villafranca-del-cid/">Villafranca del Cid</a>
       <a href="../villarreal-vila-real/">Villarreal/Vila-Real</a>
       <a href="../villavieja/">Villavieja</a>
@@ -779,19 +780,119 @@
 })();
 </script>
 <script>
+  // Compartido con el refresco en vivo de más abajo, para que los precios del
+  // popup no se queden desfasados respecto a los de la tabla.
+  var MAP_STATIONS = [{"ideess":"3508","name":"BALLENOIL","addr":"AVENIDA PAIS VALENCIA, 34","cp":"12200","municipio":"Onda","brand":"Ballenoil","lat":39.965333,"lng":-0.260417,"color":"hsl(102, 42%, 38%)","initials":"BA","prices":{"diesel":1.739,"dieselpremium":1.759,"g95":1.709}},{"ideess":"15816","name":"PLENERGY","addr":"CALLE LUCENA DEL CID, 12","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.967833,"lng":-0.251639,"color":"hsl(260, 42%, 38%)","initials":"PL","prices":{"diesel":1.739,"g95":1.709}},{"ideess":"14702","name":"BONAREA","addr":"CAMINO CORRAL DE DIAGO, 4","cp":"12200","municipio":"Onda","brand":"BonÀrea","lat":39.954944,"lng":-0.202056,"color":"hsl(66, 42%, 38%)","initials":"BO","prices":{"diesel":1.74,"g95":1.716}},{"ideess":"1956","name":"CARREFOUR","addr":"AVENIDA DEL MEDITERRANEO, S/N","cp":"12200","municipio":"Onda","brand":"Carrefour","lat":39.964611,"lng":-0.251056,"color":"hsl(99, 42%, 38%)","initials":"CA","prices":{"diesel":1.739,"dieselpremium":1.779,"g95":1.759,"g98":2.029}},{"ideess":"12524","name":"ONDAMITA OIL","addr":"AVENIDA CASTILLA LA MANCHA, 7","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.966111,"lng":-0.247389,"color":"hsl(281, 42%, 38%)","initials":"OO","prices":{"diesel":1.775,"g95":1.749}},{"ideess":"12114","name":"ROAD RUNNER","addr":"AVENIDA REAL DE EXTREMADURA, 9","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.963833,"lng":-0.230583,"color":"hsl(240, 42%, 38%)","initials":"RR","prices":{"diesel":1.819,"g95":1.779}},{"ideess":"12808","name":"BDMED","addr":"CARRETERA APEADERO DE BETXI POLIG. 19 PARC. 34 KM. 2","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.951278,"lng":-0.182472,"color":"hsl(18, 42%, 38%)","initials":"BD","prices":{"diesel":1.839,"g95":1.789,"gnc":1.299}},{"ideess":"11776","name":"CONFORT AUTO","addr":"CARRETERA CV 20 ONDA-VILA REAL (CARRER DE VILA-REAL) KM. 1","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.956556,"lng":-0.209667,"color":"hsl(74, 42%, 38%)","initials":"CA","prices":{"diesel":1.838,"dieselpremium":1.938,"g95":1.817,"g98":1.909}},{"ideess":"10260","name":"CEPSA","addr":"AVENIDA MANUEL ESCOBEDO, 20","cp":"12200","municipio":"Onda","brand":"Cepsa","lat":39.970722,"lng":-0.243417,"color":"hsl(124, 42%, 38%)","initials":"CE","prices":{"diesel":1.934,"dieselpremium":2.009,"g95":1.925}},{"ideess":"14051","name":"GMR","addr":"CALLE MEJICO, 7","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.981361,"lng":-0.156861,"color":"hsl(140, 42%, 38%)","initials":"GM","prices":{"diesel":1.952,"g95":1.95}},{"ideess":"3505","name":"MOEVE","addr":"AVENIDA MEDITERRANI, 34","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.96425,"lng":-0.247722,"color":"hsl(50, 42%, 38%)","initials":"MO","prices":{"diesel":2.024,"dieselpremium":2.099,"g95":1.989,"g98":2.069}},{"ideess":"3494","name":"REPSOL","addr":"CARRETERA CV-20 KM. 10,2","cp":"12200","municipio":"Onda","brand":"Repsol","lat":39.952167,"lng":-0.186056,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":2.035,"dieselpremium":2.135,"g95":1.979}},{"ideess":"14535","name":"RALLO","addr":"CALLE URUGUAY, 40","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.987167,"lng":-0.141139,"color":"hsl(48, 42%, 38%)","initials":"RA","prices":{"diesel":1.773}},{"ideess":"15421","name":"TRANSPORTES TRAVILL, S.L.","addr":"CALLE ECUADOR, 31","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.978,"lng":-0.15825,"color":"hsl(38, 42%, 38%)","initials":"TT","prices":{"diesel":2.009}},{"ideess":"15246","name":"TRAVOLCAS (TRAVOLPOWER)","addr":"AVENIDA MEDITERRANI, 134","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.952361,"lng":-0.188528,"color":"hsl(89, 42%, 38%)","initials":"TT","prices":{"dieselpremium":1.828}}];
+
   // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
   // de precios ya viene renderizada en el HTML).
   (function () {
-    var items = [{"name":"BALLENOIL","addr":"AVENIDA PAIS VALENCIA, 34","cp":"12200","municipio":"Onda","brand":"Ballenoil","lat":39.965333,"lng":-0.260417,"color":"hsl(102, 42%, 38%)","initials":"BA","prices":{"diesel":1.739,"dieselpremium":1.759,"g95":1.709}},{"name":"PLENERGY","addr":"CALLE LUCENA DEL CID, 12","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.967833,"lng":-0.251639,"color":"hsl(260, 42%, 38%)","initials":"PL","prices":{"diesel":1.739,"g95":1.709}},{"name":"BONAREA","addr":"CAMINO CORRAL DE DIAGO, 4","cp":"12200","municipio":"Onda","brand":"BonÀrea","lat":39.954944,"lng":-0.202056,"color":"hsl(66, 42%, 38%)","initials":"BO","prices":{"diesel":1.74,"g95":1.716}},{"name":"CARREFOUR","addr":"AVENIDA DEL MEDITERRANEO, S/N","cp":"12200","municipio":"Onda","brand":"Carrefour","lat":39.964611,"lng":-0.251056,"color":"hsl(99, 42%, 38%)","initials":"CA","prices":{"diesel":1.739,"dieselpremium":1.779,"g95":1.759,"g98":2.029}},{"name":"ONDAMITA OIL","addr":"AVENIDA CASTILLA LA MANCHA, 7","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.966111,"lng":-0.247389,"color":"hsl(281, 42%, 38%)","initials":"OO","prices":{"diesel":1.775,"g95":1.749}},{"name":"ROAD RUNNER","addr":"AVENIDA REAL DE EXTREMADURA, 9","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.963833,"lng":-0.230583,"color":"hsl(240, 42%, 38%)","initials":"RR","prices":{"diesel":1.819,"g95":1.779}},{"name":"BDMED","addr":"CARRETERA APEADERO DE BETXI POLIG. 19 PARC. 34 KM. 2","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.951278,"lng":-0.182472,"color":"hsl(18, 42%, 38%)","initials":"BD","prices":{"diesel":1.839,"g95":1.789,"gnc":1.299}},{"name":"CONFORT AUTO","addr":"CARRETERA CV 20 ONDA-VILA REAL (CARRER DE VILA-REAL) KM. 1","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.956556,"lng":-0.209667,"color":"hsl(74, 42%, 38%)","initials":"CA","prices":{"diesel":1.838,"dieselpremium":1.938,"g95":1.817,"g98":1.909}},{"name":"CEPSA","addr":"AVENIDA MANUEL ESCOBEDO, 20","cp":"12200","municipio":"Onda","brand":"Cepsa","lat":39.970722,"lng":-0.243417,"color":"hsl(124, 42%, 38%)","initials":"CE","prices":{"diesel":1.934,"dieselpremium":2.009,"g95":1.925}},{"name":"GMR","addr":"CALLE MEJICO, 7","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.981361,"lng":-0.156861,"color":"hsl(140, 42%, 38%)","initials":"GM","prices":{"diesel":1.952,"g95":1.95}},{"name":"MOEVE","addr":"AVENIDA MEDITERRANI, 34","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.96425,"lng":-0.247722,"color":"hsl(50, 42%, 38%)","initials":"MO","prices":{"diesel":2.024,"dieselpremium":2.099,"g95":1.989,"g98":2.069}},{"name":"REPSOL","addr":"CARRETERA CV-20 KM. 10,2","cp":"12200","municipio":"Onda","brand":"Repsol","lat":39.952167,"lng":-0.186056,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":2.035,"dieselpremium":2.135,"g95":1.979}},{"name":"RALLO","addr":"CALLE URUGUAY, 40","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.987167,"lng":-0.141139,"color":"hsl(48, 42%, 38%)","initials":"RA","prices":{"diesel":1.773}},{"name":"TRANSPORTES TRAVILL, S.L.","addr":"CALLE ECUADOR, 31","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.978,"lng":-0.15825,"color":"hsl(38, 42%, 38%)","initials":"TT","prices":{"diesel":2.009}},{"name":"TRAVOLCAS (TRAVOLPOWER)","addr":"AVENIDA MEDITERRANI, 134","cp":"12200","municipio":"Onda","brand":"Otras","lat":39.952361,"lng":-0.188528,"color":"hsl(89, 42%, 38%)","initials":"TT","prices":{"dieselpremium":1.828}}];
-    if (!items.length || typeof L === "undefined") return;
+    if (!MAP_STATIONS.length || typeof L === "undefined") return;
     document.getElementById("map-section").classList.remove("hidden");
-    FuelMap.render(items, null);
+    FuelMap.render(MAP_STATIONS, null);
   })();
 </script>
 <script>
   var FUEL_LABELS = {"diesel":"Diésel","dieselpremium":"Dsl. Prem.","g95":"G. 95","g98":"G. 98","glp":"GLP","gnc":"GNC"};
   var DEFAULT_FUELS = ["diesel","g95"];
+</script>
+<script>
+(function () {
+  var API = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/";
+  var PROVINCIAS = ["03","12","46"];
+  var FUEL_FIELDS = {"diesel":"Precio Gasoleo A","dieselpremium":"Precio Gasoleo Premium","g95":"Precio Gasolina 95 E5","g98":"Precio Gasolina 98 E5","glp":"Precio Gases licuados del petróleo","gnc":"Precio Gas Natural Comprimido"};
+  var CACHE_KEY = "precios-live-v1";
+  var CACHE_MS = 15 * 60 * 1000;
+  var TIMEOUT_MS = 8000;
+
+  function parsePrice(v) {
+    if (!v) return null;
+    var n = parseFloat(String(v).replace(",", "."));
+    return isFinite(n) ? n : null;
+  }
+
+  // localStorage puede lanzar (modo privado, cookies bloqueadas): nunca debe
+  // tumbar la página.
+  function readCache() {
+    try {
+      var raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      var cached = JSON.parse(raw);
+      if (!cached || Date.now() - cached.at > CACHE_MS) return null;
+      return cached;
+    } catch (e) { return null; }
+  }
+
+  function writeCache(value) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(value)); } catch (e) {}
+  }
+
+  function fetchProvincia(codigo, signal) {
+    return fetch(API + codigo, { signal: signal, headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  // { ideess: { carburante: precio } } con lo que devuelva la API ahora mismo.
+  function load() {
+    var cached = readCache();
+    if (cached) return Promise.resolve(cached);
+
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, TIMEOUT_MS) : null;
+    var signal = controller ? controller.signal : undefined;
+
+    return Promise.all(PROVINCIAS.map(function (p) { return fetchProvincia(p, signal); }))
+      .then(function (responses) {
+        if (timer) clearTimeout(timer);
+
+        var prices = {};
+        var fechas = [];
+        var any = false;
+
+        responses.forEach(function (json) {
+          if (!json) return;
+          if (json["Fecha"]) fechas.push(json["Fecha"]);
+          (json.ListaEESSPrecio || []).forEach(function (e) {
+            var id = (e["IDEESS"] || "").trim();
+            if (!id) return;
+            var row = {};
+            for (var fuel in FUEL_FIELDS) {
+              var price = parsePrice(e[FUEL_FIELDS[fuel]]);
+              if (price !== null) row[fuel] = price;
+            }
+            prices[id] = row;
+            any = true;
+          });
+        });
+
+        if (!any) return null;
+        var result = { at: Date.now(), fecha: fechas[0] || null, prices: prices };
+        writeCache(result);
+        return result;
+      })
+      .catch(function () {
+        if (timer) clearTimeout(timer);
+        return null;
+      });
+  }
+
+  // onData recibe { fecha, prices } y solo se llama si hay datos de verdad.
+  function refresh(onData) {
+    if (typeof fetch !== "function" || typeof Promise === "undefined") return;
+    load().then(function (result) {
+      if (result && result.prices) onData(result);
+    }).catch(function () {});
+  }
+
+  function markLive(fecha) {
+    var pill = document.getElementById("status-pill");
+    if (pill) pill.innerHTML = '<i></i> Precios en directo del Ministerio' + (fecha ? " \u00b7 " + fecha : "");
+  }
+
+  window.LivePrices = { refresh: refresh, markLive: markLive };
+})();
 </script>
 <script>
   // Filtros de marca y carburante, también como mejora progresiva: operan
@@ -901,6 +1002,46 @@
 
     brandSelect.addEventListener("change", apply);
     fuelSelect.addEventListener("change", apply);
+
+    // Precios en vivo: se reescriben los data-p-* de cada fila con lo que
+    // diga el Ministerio ahora y se vuelve a aplicar el filtro, que es quien
+    // reordena, repinta los precios y recalcula "MÁS BARATA". Si falla, se
+    // quedan los precios del build.
+    if (window.LivePrices) {
+      LivePrices.refresh(function (live) {
+        var updated = 0;
+        rows.forEach(function (row) {
+          var fresh = live.prices[row.getAttribute("data-ideess")];
+          if (!fresh) return;
+          updated++;
+          Object.keys(FUEL_LABELS).forEach(function (id) {
+            if (fresh[id] === undefined) row.removeAttribute("data-p-" + id);
+            else row.setAttribute("data-p-" + id, fresh[id]);
+          });
+        });
+        if (!updated) return;
+
+        // Las cifras del héroe y los popups del mapa salen de los mismos
+        // precios: si se quedaran con los del build, contradirían a la tabla.
+        DEFAULT_FUELS.forEach(function (id, i) {
+          var values = rows.map(function (r) { return priceOf(r, id); })
+            .filter(function (v) { return v !== null; });
+          var el = document.getElementById(i === 0 ? "stat-diesel" : "stat-g95");
+          if (el && values.length) el.textContent = fmt(Math.min.apply(null, values));
+        });
+
+        if (typeof MAP_STATIONS !== "undefined" && typeof FuelMap !== "undefined") {
+          MAP_STATIONS.forEach(function (s) {
+            var fresh = live.prices[s.ideess];
+            if (fresh) s.prices = fresh;
+          });
+          if (MAP_STATIONS.length) FuelMap.render(MAP_STATIONS, null);
+        }
+
+        LivePrices.markLive(live.fecha);
+        apply();
+      });
+    }
   })();
 </script>
 </body>

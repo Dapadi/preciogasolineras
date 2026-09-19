@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Alicante · Pedreguer</div>
-    <div class="status-pill"><i></i> Actualizado 19/09/2026 11:35:16 con datos del Ministerio</div>
+    <div class="status-pill" id="status-pill"><i></i> Actualizado 19/09/2026 13:56:39 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Pedreguer hoy</h1>
     <p class="hero-sub">Las <b>7 gasolineras</b> de Pedreguer (Alicante) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -298,8 +298,8 @@
     <div class="search-hint" id="filter-count">Escribe y pulsa "Buscar" para ir al buscador general.</div>
 
     <div class="stats">
-      <div><b>1,889</b><span>diésel más barato</span></div>
-      <div><b>1,949</b><span>gasolina 95 más barata</span></div>
+      <div><b id="stat-diesel">1,889</b><span>diésel más barato</span></div>
+      <div><b id="stat-g95">1,949</b><span>gasolina 95 más barata</span></div>
       <div><b>7</b><span>gasolineras</span></div>
     </div>
   </div>
@@ -313,7 +313,7 @@
           <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
         </div>
         <ul class="stations">
-    <li class="station" data-brand="Otras" data-p-diesel="1.889" data-p-g95="1.949">
+    <li class="station" data-ideess="13192" data-brand="Otras" data-p-diesel="1.889" data-p-g95="1.949">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.798667,0.040333" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(155, 42%, 38%)">CO</div>
@@ -329,7 +329,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Shell" data-p-diesel="1.984" data-p-dieselpremium="2.064" data-p-g95="2.014" data-p-g98="2.154">
+    <li class="station" data-ideess="8382" data-brand="Shell" data-p-diesel="1.984" data-p-dieselpremium="2.064" data-p-g95="2.014" data-p-g98="2.154">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.797667,0.054222" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(16, 42%, 38%)">SH</div>
@@ -345,7 +345,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Shell" data-p-diesel="1.984" data-p-dieselpremium="2.064" data-p-g95="2.014" data-p-g98="2.154">
+    <li class="station" data-ideess="8383" data-brand="Shell" data-p-diesel="1.984" data-p-dieselpremium="2.064" data-p-g95="2.014" data-p-g98="2.154">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.797417,0.052972" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(16, 42%, 38%)">SH</div>
@@ -361,7 +361,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Repsol" data-p-diesel="1.989" data-p-dieselpremium="2.079" data-p-g95="2.039" data-p-g98="2.139">
+    <li class="station" data-ideess="3457" data-brand="Repsol" data-p-diesel="1.979" data-p-dieselpremium="2.079" data-p-g95="2.029" data-p-g98="2.139">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.800111,0.038889" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -370,14 +370,14 @@
             <div class="addr">CL AVENIDA JAON CARLES I, 27 · Pedreguer</div>
           </div>
         </div>
-        <div class="price">1,989</div>
-        <div class="price col-p2">2,039</div>
+        <div class="price">1,979</div>
+        <div class="price col-p2">2,029</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Galp" data-p-diesel="2.009" data-p-dieselpremium="2.099" data-p-g95="2.079" data-p-g98="2.179">
+    <li class="station" data-ideess="3747" data-brand="Galp" data-p-diesel="2.014" data-p-dieselpremium="2.104" data-p-g95="2.084" data-p-g98="2.179">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.789861,0.063417" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(262, 42%, 38%)">GA</div>
@@ -386,14 +386,14 @@
             <div class="addr">AUTOPISTA AP-7 (MRG.DCHO.) KM. 613,2 · Pedreguer</div>
           </div>
         </div>
-        <div class="price">2,009</div>
-        <div class="price col-p2">2,079</div>
+        <div class="price">2,014</div>
+        <div class="price col-p2">2,084</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Galp" data-p-diesel="2.009" data-p-dieselpremium="2.099" data-p-g95="2.079" data-p-g98="2.179">
+    <li class="station" data-ideess="3718" data-brand="Galp" data-p-diesel="2.014" data-p-dieselpremium="2.104" data-p-g95="2.084" data-p-g98="2.179">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.792028,0.06275" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(262, 42%, 38%)">GA</div>
@@ -402,14 +402,14 @@
             <div class="addr">AUTOPISTA AP-7 (MRG.IZDO.) KM. 613,2 · Pedreguer</div>
           </div>
         </div>
-        <div class="price">2,009</div>
-        <div class="price col-p2">2,079</div>
+        <div class="price">2,014</div>
+        <div class="price col-p2">2,084</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </a>
     </li>
-    <li class="station" data-brand="Otras" data-p-gnc="1.809">
+    <li class="station" data-ideess="15766" data-brand="Otras" data-p-gnc="1.809">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.792056,0.063139" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(4, 42%, 38%)">HA</div>
@@ -672,19 +672,119 @@
 })();
 </script>
 <script>
+  // Compartido con el refresco en vivo de más abajo, para que los precios del
+  // popup no se queden desfasados respecto a los de la tabla.
+  var MAP_STATIONS = [{"ideess":"13192","name":"COMBUSELLA","addr":"CALLE BARRANC DEL MARX, 4","cp":"03750","municipio":"Pedreguer","brand":"Otras","lat":38.798667,"lng":0.040333,"color":"hsl(155, 42%, 38%)","initials":"CO","prices":{"diesel":1.889,"g95":1.949}},{"ideess":"8382","name":"SHELL","addr":"CARRETERA C-332 KM. 193","cp":"03750","municipio":"Pedreguer","brand":"Shell","lat":38.797667,"lng":0.054222,"color":"hsl(16, 42%, 38%)","initials":"SH","prices":{"diesel":1.984,"dieselpremium":2.064,"g95":2.014,"g98":2.154}},{"ideess":"8383","name":"SHELL","addr":"CARRETERA N-332 KM. 193","cp":"03750","municipio":"Pedreguer","brand":"Shell","lat":38.797417,"lng":0.052972,"color":"hsl(16, 42%, 38%)","initials":"SH","prices":{"diesel":1.984,"dieselpremium":2.064,"g95":2.014,"g98":2.154}},{"ideess":"3457","name":"REPSOL","addr":"CL AVENIDA JAON CARLES I, 27","cp":"03750","municipio":"Pedreguer","brand":"Repsol","lat":38.800111,"lng":0.038889,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.979,"dieselpremium":2.079,"g95":2.029,"g98":2.139}},{"ideess":"3747","name":"GALP","addr":"AUTOPISTA AP-7 (MRG.DCHO.) KM. 613,2","cp":"03750","municipio":"Pedreguer","brand":"Galp","lat":38.789861,"lng":0.063417,"color":"hsl(262, 42%, 38%)","initials":"GA","prices":{"diesel":2.014,"dieselpremium":2.104,"g95":2.084,"g98":2.179}},{"ideess":"3718","name":"GALP","addr":"AUTOPISTA AP-7 (MRG.IZDO.) KM. 613,2","cp":"03750","municipio":"Pedreguer","brand":"Galp","lat":38.792028,"lng":0.06275,"color":"hsl(262, 42%, 38%)","initials":"GA","prices":{"diesel":2.014,"dieselpremium":2.104,"g95":2.084,"g98":2.179}},{"ideess":"15766","name":"HAM","addr":"AUTOPISTA AP-7 KM. 613,2","cp":"03750","municipio":"Pedreguer","brand":"Otras","lat":38.792056,"lng":0.063139,"color":"hsl(4, 42%, 38%)","initials":"HA","prices":{"gnc":1.809}}];
+
   // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
   // de precios ya viene renderizada en el HTML).
   (function () {
-    var items = [{"name":"COMBUSELLA","addr":"CALLE BARRANC DEL MARX, 4","cp":"03750","municipio":"Pedreguer","brand":"Otras","lat":38.798667,"lng":0.040333,"color":"hsl(155, 42%, 38%)","initials":"CO","prices":{"diesel":1.889,"g95":1.949}},{"name":"SHELL","addr":"CARRETERA C-332 KM. 193","cp":"03750","municipio":"Pedreguer","brand":"Shell","lat":38.797667,"lng":0.054222,"color":"hsl(16, 42%, 38%)","initials":"SH","prices":{"diesel":1.984,"dieselpremium":2.064,"g95":2.014,"g98":2.154}},{"name":"SHELL","addr":"CARRETERA N-332 KM. 193","cp":"03750","municipio":"Pedreguer","brand":"Shell","lat":38.797417,"lng":0.052972,"color":"hsl(16, 42%, 38%)","initials":"SH","prices":{"diesel":1.984,"dieselpremium":2.064,"g95":2.014,"g98":2.154}},{"name":"REPSOL","addr":"CL AVENIDA JAON CARLES I, 27","cp":"03750","municipio":"Pedreguer","brand":"Repsol","lat":38.800111,"lng":0.038889,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.989,"dieselpremium":2.079,"g95":2.039,"g98":2.139}},{"name":"GALP","addr":"AUTOPISTA AP-7 (MRG.DCHO.) KM. 613,2","cp":"03750","municipio":"Pedreguer","brand":"Galp","lat":38.789861,"lng":0.063417,"color":"hsl(262, 42%, 38%)","initials":"GA","prices":{"diesel":2.009,"dieselpremium":2.099,"g95":2.079,"g98":2.179}},{"name":"GALP","addr":"AUTOPISTA AP-7 (MRG.IZDO.) KM. 613,2","cp":"03750","municipio":"Pedreguer","brand":"Galp","lat":38.792028,"lng":0.06275,"color":"hsl(262, 42%, 38%)","initials":"GA","prices":{"diesel":2.009,"dieselpremium":2.099,"g95":2.079,"g98":2.179}},{"name":"HAM","addr":"AUTOPISTA AP-7 KM. 613,2","cp":"03750","municipio":"Pedreguer","brand":"Otras","lat":38.792056,"lng":0.063139,"color":"hsl(4, 42%, 38%)","initials":"HA","prices":{"gnc":1.809}}];
-    if (!items.length || typeof L === "undefined") return;
+    if (!MAP_STATIONS.length || typeof L === "undefined") return;
     document.getElementById("map-section").classList.remove("hidden");
-    FuelMap.render(items, null);
+    FuelMap.render(MAP_STATIONS, null);
   })();
 </script>
 <script>
   var FUEL_LABELS = {"diesel":"Diésel","dieselpremium":"Dsl. Prem.","g95":"G. 95","g98":"G. 98","glp":"GLP","gnc":"GNC"};
   var DEFAULT_FUELS = ["diesel","g95"];
+</script>
+<script>
+(function () {
+  var API = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvincia/";
+  var PROVINCIAS = ["03","12","46"];
+  var FUEL_FIELDS = {"diesel":"Precio Gasoleo A","dieselpremium":"Precio Gasoleo Premium","g95":"Precio Gasolina 95 E5","g98":"Precio Gasolina 98 E5","glp":"Precio Gases licuados del petróleo","gnc":"Precio Gas Natural Comprimido"};
+  var CACHE_KEY = "precios-live-v1";
+  var CACHE_MS = 15 * 60 * 1000;
+  var TIMEOUT_MS = 8000;
+
+  function parsePrice(v) {
+    if (!v) return null;
+    var n = parseFloat(String(v).replace(",", "."));
+    return isFinite(n) ? n : null;
+  }
+
+  // localStorage puede lanzar (modo privado, cookies bloqueadas): nunca debe
+  // tumbar la página.
+  function readCache() {
+    try {
+      var raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      var cached = JSON.parse(raw);
+      if (!cached || Date.now() - cached.at > CACHE_MS) return null;
+      return cached;
+    } catch (e) { return null; }
+  }
+
+  function writeCache(value) {
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(value)); } catch (e) {}
+  }
+
+  function fetchProvincia(codigo, signal) {
+    return fetch(API + codigo, { signal: signal, headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  // { ideess: { carburante: precio } } con lo que devuelva la API ahora mismo.
+  function load() {
+    var cached = readCache();
+    if (cached) return Promise.resolve(cached);
+
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, TIMEOUT_MS) : null;
+    var signal = controller ? controller.signal : undefined;
+
+    return Promise.all(PROVINCIAS.map(function (p) { return fetchProvincia(p, signal); }))
+      .then(function (responses) {
+        if (timer) clearTimeout(timer);
+
+        var prices = {};
+        var fechas = [];
+        var any = false;
+
+        responses.forEach(function (json) {
+          if (!json) return;
+          if (json["Fecha"]) fechas.push(json["Fecha"]);
+          (json.ListaEESSPrecio || []).forEach(function (e) {
+            var id = (e["IDEESS"] || "").trim();
+            if (!id) return;
+            var row = {};
+            for (var fuel in FUEL_FIELDS) {
+              var price = parsePrice(e[FUEL_FIELDS[fuel]]);
+              if (price !== null) row[fuel] = price;
+            }
+            prices[id] = row;
+            any = true;
+          });
+        });
+
+        if (!any) return null;
+        var result = { at: Date.now(), fecha: fechas[0] || null, prices: prices };
+        writeCache(result);
+        return result;
+      })
+      .catch(function () {
+        if (timer) clearTimeout(timer);
+        return null;
+      });
+  }
+
+  // onData recibe { fecha, prices } y solo se llama si hay datos de verdad.
+  function refresh(onData) {
+    if (typeof fetch !== "function" || typeof Promise === "undefined") return;
+    load().then(function (result) {
+      if (result && result.prices) onData(result);
+    }).catch(function () {});
+  }
+
+  function markLive(fecha) {
+    var pill = document.getElementById("status-pill");
+    if (pill) pill.innerHTML = '<i></i> Precios en directo del Ministerio' + (fecha ? " \u00b7 " + fecha : "");
+  }
+
+  window.LivePrices = { refresh: refresh, markLive: markLive };
+})();
 </script>
 <script>
   // Filtros de marca y carburante, también como mejora progresiva: operan
@@ -794,6 +894,46 @@
 
     brandSelect.addEventListener("change", apply);
     fuelSelect.addEventListener("change", apply);
+
+    // Precios en vivo: se reescriben los data-p-* de cada fila con lo que
+    // diga el Ministerio ahora y se vuelve a aplicar el filtro, que es quien
+    // reordena, repinta los precios y recalcula "MÁS BARATA". Si falla, se
+    // quedan los precios del build.
+    if (window.LivePrices) {
+      LivePrices.refresh(function (live) {
+        var updated = 0;
+        rows.forEach(function (row) {
+          var fresh = live.prices[row.getAttribute("data-ideess")];
+          if (!fresh) return;
+          updated++;
+          Object.keys(FUEL_LABELS).forEach(function (id) {
+            if (fresh[id] === undefined) row.removeAttribute("data-p-" + id);
+            else row.setAttribute("data-p-" + id, fresh[id]);
+          });
+        });
+        if (!updated) return;
+
+        // Las cifras del héroe y los popups del mapa salen de los mismos
+        // precios: si se quedaran con los del build, contradirían a la tabla.
+        DEFAULT_FUELS.forEach(function (id, i) {
+          var values = rows.map(function (r) { return priceOf(r, id); })
+            .filter(function (v) { return v !== null; });
+          var el = document.getElementById(i === 0 ? "stat-diesel" : "stat-g95");
+          if (el && values.length) el.textContent = fmt(Math.min.apply(null, values));
+        });
+
+        if (typeof MAP_STATIONS !== "undefined" && typeof FuelMap !== "undefined") {
+          MAP_STATIONS.forEach(function (s) {
+            var fresh = live.prices[s.ideess];
+            if (fresh) s.prices = fresh;
+          });
+          if (MAP_STATIONS.length) FuelMap.render(MAP_STATIONS, null);
+        }
+
+        LivePrices.markLive(live.fecha);
+        apply();
+      });
+    }
   })();
 </script>
 </body>
