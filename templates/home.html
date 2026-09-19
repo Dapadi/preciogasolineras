@@ -56,7 +56,7 @@ __FILTER_STYLES__
 
 <header class="hero">
   <div class="hero-inner">
-    <div class="status-pill"><i></i> Actualizado __UPDATED_AT__ con datos del Ministerio</div>
+    <div class="status-pill" id="status-pill"><i></i> Actualizado __UPDATED_AT__ con datos del Ministerio</div>
 
     <h1>Precio de la <em>gasolina</em> hoy en la Comunitat Valenciana</h1>
     <p class="hero-sub">Compara las <b>__TOTAL_STATIONS__ gasolineras</b> de Alicante, Castellón y Valencia con los precios oficiales que cada una comunica al Ministerio. Gratis y sin registro.</p>
@@ -136,6 +136,7 @@ __COOKIE_BANNER__
 
 __MAP_SCRIPT__
 __FUEL_CATALOG_SCRIPT__
+__LIVE_SCRIPT__
 <script>
   const stations = __STATIONS_JSON__;
   const MAX_RESULTS = 200;
@@ -431,6 +432,25 @@ __FUEL_CATALOG_SCRIPT__
   const initialQuery = new URLSearchParams(location.search).get("q") || "";
   if (initialQuery) input.value = initialQuery;
   render(initialQuery);
+
+  // Precios en vivo: el HTML publicado puede llevar horas de retraso, así que
+  // en segundo plano se piden los precios de ahora y se vuelve a dibujar lo
+  // que hubiera en pantalla. Si falla, no se toca nada.
+  LivePrices.refresh(function (live) {
+    let updated = 0;
+    stations.forEach((s) => {
+      const fresh = live.prices[s.ideess];
+      if (fresh) { s.prices = fresh; updated++; }
+    });
+    if (!updated) return;
+
+    LivePrices.markLive(live.fecha);
+    if (geoBtn.classList.contains("on") && userPos) {
+      renderNearby(userPos);
+    } else {
+      render(input.value);
+    }
+  });
 </script>
 </body>
 </html>

@@ -12,6 +12,9 @@ export function clientStationsJson(stations) {
       if (price !== null && price !== undefined) prices[id] = price;
     }
     return {
+      // Identificador del Ministerio: es lo que permite casar cada gasolinera
+      // con los precios que se piden en vivo desde el navegador.
+      ideess: s.ideess,
       name: s.name,
       addr: s.addr,
       cp: s.cp,
