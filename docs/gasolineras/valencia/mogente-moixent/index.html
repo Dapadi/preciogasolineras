@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · Mogente/Moixent</div>
-    <div class="status-pill" id="status-pill"><i></i> Actualizado 23/09/2026 23:49:24 con datos del Ministerio</div>
+    <div class="status-pill" id="status-pill"><i></i> Actualizado 24/09/2026 2:01:17 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Mogente/Moixent hoy</h1>
     <p class="hero-sub">Las <b>2 gasolineras</b> de Mogente/Moixent (Valencia) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -311,7 +311,7 @@
           <span>Gasolinera</span><span id="lab-p1">Diésel</span><span class="col-p2" id="lab-p2">G. 95</span><span></span>
         </div>
         <ul class="stations">
-    <li class="station" data-ideess="11903" data-brand="Otras" data-p-diesel="1.777" data-p-g95="1.797">
+    <li class="station" data-ideess="11903" data-brand="Otras" data-p-diesel="1.777" data-t-diesel="0" data-p-g95="1.797" data-t-g95="0">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.87375,-0.765" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(125, 42%, 38%)">AC</div>
@@ -327,7 +327,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-ideess="3964" data-brand="Repsol" data-p-diesel="2.025" data-p-dieselpremium="2.075" data-p-g95="2.019" data-p-g98="2.179">
+    <li class="station" data-ideess="3964" data-brand="Repsol" data-p-diesel="2.025" data-t-diesel="0.016" data-p-dieselpremium="2.075" data-p-g95="2.009" data-t-g95="0" data-p-g98="2.169">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=38.878611,-0.754167" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -336,8 +336,8 @@
             <div class="addr">CARRETERA N-430 KM. 625 · Mogente/Moixent</div>
           </div>
         </div>
-        <div class="price">2,025</div>
-        <div class="price col-p2">2,019</div>
+        <div class="price">2,025<div class="trend trend-up">▲ +0,016</div></div>
+        <div class="price col-p2">2,009</div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -357,8 +357,8 @@
 <div class="price-chart">
     <h2>Precio medio en Mogente/Moixent (últimos 30 días)</h2>
     <svg viewBox="0 0 320 64" width="100%" height="64" role="img" aria-label="Precio medio en Mogente/Moixent (últimos 30 días)">
-      <polyline points="250.3,58.0 260.9,47.6 271.5,40.7 282.1,23.3 292.8,23.3 303.4,23.3 314.0,12.9" fill="none" stroke-width="2" style="stroke:var(--line-diesel)" />
-      <polyline points="250.3,23.3 260.9,12.9 271.5,6.0 282.1,23.3 292.8,23.3 303.4,23.3 314.0,30.3" fill="none" stroke-width="2" style="stroke:var(--line-g95)" />
+      <polyline points="239.7,58.0 250.3,47.6 260.9,40.7 271.5,23.3 282.1,23.3 292.8,23.3 303.4,12.9 314.0,30.3" fill="none" stroke-width="2" style="stroke:var(--line-diesel)" />
+      <polyline points="239.7,23.3 250.3,12.9 260.9,6.0 271.5,23.3 282.1,23.3 292.8,23.3 303.4,30.3 314.0,23.3" fill="none" stroke-width="2" style="stroke:var(--line-g95)" />
     </svg>
     <div class="chart-legend">
       <span><i style="background:var(--line-diesel)"></i>Diésel</span>
@@ -673,7 +673,7 @@
 <script>
   // Compartido con el refresco en vivo de más abajo, para que los precios del
   // popup no se queden desfasados respecto a los de la tabla.
-  var MAP_STATIONS = [{"ideess":"11903","name":"AUROSERVICIO CIRUGEDA 24 H","addr":"AVENIDA HIJAS DE LA CARIDAD, 69","cp":"46640","municipio":"Mogente/Moixent","brand":"Otras","lat":38.87375,"lng":-0.765,"color":"hsl(125, 42%, 38%)","initials":"AC","prices":{"diesel":1.777,"g95":1.797}},{"ideess":"3964","name":"REPSOL","addr":"CARRETERA N-430 KM. 625","cp":"46640","municipio":"Mogente/Moixent","brand":"Repsol","lat":38.878611,"lng":-0.754167,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":2.025,"dieselpremium":2.075,"g95":2.019,"g98":2.179}}];
+  var MAP_STATIONS = [{"ideess":"11903","name":"AUROSERVICIO CIRUGEDA 24 H","addr":"AVENIDA HIJAS DE LA CARIDAD, 69","cp":"46640","municipio":"Mogente/Moixent","brand":"Otras","lat":38.87375,"lng":-0.765,"color":"hsl(125, 42%, 38%)","initials":"AC","prices":{"diesel":1.777,"g95":1.797}},{"ideess":"3964","name":"REPSOL","addr":"CARRETERA N-430 KM. 625","cp":"46640","municipio":"Mogente/Moixent","brand":"Repsol","lat":38.878611,"lng":-0.754167,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":2.025,"dieselpremium":2.075,"g95":2.009,"g98":2.169}}];
 
   // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
