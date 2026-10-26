@@ -266,7 +266,7 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="breadcrumb"><a href="../../../">Inicio</a> · Valencia · Vilamarxant</div>
-    <div class="status-pill" id="status-pill"><i></i> Actualizado 26/10/2026 6:11:34 con datos del Ministerio</div>
+    <div class="status-pill" id="status-pill"><i></i> Actualizado 26/10/2026 12:13:42 con datos del Ministerio</div>
 
     <h1>Gasolinera más barata en Vilamarxant hoy</h1>
     <p class="hero-sub">Las <b>4 gasolineras</b> de Vilamarxant (Valencia) ordenadas de más barata a más cara, con los precios oficiales del Ministerio.</p>
@@ -343,7 +343,7 @@
         </div>
       </a>
     </li>
-    <li class="station" data-ideess="3790" data-brand="Repsol" data-p-diesel="1.949" data-t-diesel="0" data-p-dieselpremium="2.049" data-t-dieselpremium="0" data-p-g95="1.899" data-t-g95="0" data-p-g98="1.999" data-t-g98="0">
+    <li class="station" data-ideess="3790" data-brand="Repsol" data-p-diesel="1.989" data-t-diesel="0.04" data-p-dieselpremium="2.089" data-t-dieselpremium="0.04" data-p-g95="1.939" data-t-g95="0.04" data-p-g98="2.039" data-t-g98="0.04">
       <a class="row" href="https://www.google.com/maps/search/?api=1&amp;query=39.572167,-0.624333" target="_blank" rel="noopener">
         <div class="id-cell">
           <div class="mono" style="background:hsl(117, 42%, 38%)">RE</div>
@@ -352,8 +352,8 @@
             <div class="addr">CARRETERA CV-50 KM. 89,9 · Vilamarxant</div>
           </div>
         </div>
-        <div class="price">1,949</div>
-        <div class="price col-p2">1,899</div>
+        <div class="price">1,989<div class="trend trend-up">▲ +0,040</div></div>
+        <div class="price col-p2">1,939<div class="trend trend-up">▲ +0,040</div></div>
         <div class="pin">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
@@ -539,6 +539,7 @@
       <a href="../siete-aguas/">Siete Aguas</a>
       <a href="../silla/">Silla</a>
       <a href="../simat-de-la-valldigna/">Simat de la Valldigna</a>
+      <a href="../sinarcas/">Sinarcas</a>
       <a href="../sollana/">Sollana</a>
       <a href="../sueca/">Sueca</a>
       <a href="../tavernes-de-la-valldigna/">Tavernes de la Valldigna</a>
@@ -702,7 +703,7 @@
 <script>
   // Compartido con el refresco en vivo de más abajo, para que los precios del
   // popup no se queden desfasados respecto a los de la tabla.
-  var MAP_STATIONS = [{"ideess":"11906","name":"RURAL SAN VICENTE FERRER","addr":"POLIGONO ENCHIGALAN DEL RULLO PARCELA 72, 72","cp":"46191","municipio":"Vilamarxant","brand":"Otras","lat":39.561667,"lng":-0.633306,"color":"hsl(280, 42%, 38%)","initials":"RS","prices":{"diesel":1.749,"dieselpremium":1.799,"g95":1.609,"g98":1.859}},{"ideess":"12715","name":"BENZINERA VILAMARXANT","addr":"POLIGONO ENCHILAGAR DEL RULLO, CALLE 12,, 9","cp":"46191","municipio":"Vilamarxant","brand":"Otras","lat":39.562694,"lng":-0.635,"color":"hsl(27, 42%, 38%)","initials":"BV","prices":{"diesel":1.769,"g95":1.629}},{"ideess":"3790","name":"REPSOL","addr":"CARRETERA CV-50 KM. 89,9","cp":"46191","municipio":"Vilamarxant","brand":"Repsol","lat":39.572167,"lng":-0.624333,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.949,"dieselpremium":2.049,"g95":1.899,"g98":1.999}},{"ideess":"4058","name":"VILAMARXANT","addr":"CARRETERA QUART A DOMEÑO KM. 18,870","cp":"46191","municipio":"Vilamarxant","brand":"Otras","lat":39.566389,"lng":-0.618111,"color":"hsl(101, 42%, 38%)","initials":"VI","prices":{"diesel":1.969,"dieselpremium":2.069,"g95":1.989,"g98":2.089}}];
+  var MAP_STATIONS = [{"ideess":"11906","name":"RURAL SAN VICENTE FERRER","addr":"POLIGONO ENCHIGALAN DEL RULLO PARCELA 72, 72","cp":"46191","municipio":"Vilamarxant","brand":"Otras","lat":39.561667,"lng":-0.633306,"color":"hsl(280, 42%, 38%)","initials":"RS","prices":{"diesel":1.749,"dieselpremium":1.799,"g95":1.609,"g98":1.859}},{"ideess":"12715","name":"BENZINERA VILAMARXANT","addr":"POLIGONO ENCHILAGAR DEL RULLO, CALLE 12,, 9","cp":"46191","municipio":"Vilamarxant","brand":"Otras","lat":39.562694,"lng":-0.635,"color":"hsl(27, 42%, 38%)","initials":"BV","prices":{"diesel":1.769,"g95":1.629}},{"ideess":"3790","name":"REPSOL","addr":"CARRETERA CV-50 KM. 89,9","cp":"46191","municipio":"Vilamarxant","brand":"Repsol","lat":39.572167,"lng":-0.624333,"color":"hsl(117, 42%, 38%)","initials":"RE","prices":{"diesel":1.989,"dieselpremium":2.089,"g95":1.939,"g98":2.039}},{"ideess":"4058","name":"VILAMARXANT","addr":"CARRETERA QUART A DOMEÑO KM. 18,870","cp":"46191","municipio":"Vilamarxant","brand":"Otras","lat":39.566389,"lng":-0.618111,"color":"hsl(101, 42%, 38%)","initials":"VI","prices":{"diesel":1.969,"dieselpremium":2.069,"g95":1.989,"g98":2.089}}];
 
   // El mapa es una mejora progresiva: si no hay coordenadas o Leaflet no ha
   // cargado, la sección se queda oculta y la página funciona igual (la tabla
